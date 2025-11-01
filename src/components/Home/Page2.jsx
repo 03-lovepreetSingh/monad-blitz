@@ -231,7 +231,7 @@ export default function Page2() {
   };
 
   return (
-    <div className="min-h-screen text-white relative overAVAX-hidden">
+    <div className="min-h-screen text-white relative overMonad-hidden">
       {/* Background */}
 
       {/* Content Container */}
@@ -306,7 +306,7 @@ export default function Page2() {
                     const baseStyle = {
                       width: "clamp(320px, 60vw, 700px)", // Responsive width
                       height: "clamp(200px, 37vw, 440px)", // Responsive height maintaining aspect ratio
-                      maxWidth: "90vw", // Prevent overAVAX on very small screens
+                      maxWidth: "90vw", // Prevent overMonad on very small screens
                       cursor: isDraggable ? "grab" : "default",
                       ...transform,
                     };
@@ -356,7 +356,7 @@ export default function Page2() {
                     const baseStyle = {
                       width: "clamp(320px, 60vw, 700px)", // Responsive width
                       height: "clamp(200px, 37vw, 440px)", // Responsive height maintaining aspect ratio
-                      maxWidth: "90vw", // Prevent overAVAX on very small screens
+                      maxWidth: "90vw", // Prevent overMonad on very small screens
                       cursor: isDraggable ? "grab" : "default",
                       ...transform,
                     };

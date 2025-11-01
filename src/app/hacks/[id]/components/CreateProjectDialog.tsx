@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Code, Loader2, Plus, X } from "lucide-react";
 import { createHackProject } from "@/actions/hacks";
@@ -25,7 +25,11 @@ interface CreateProjectDialogProps {
   onSuccess?: () => void;
 }
 
-export function CreateProjectDialog({ hackathonId, trigger, onSuccess }: CreateProjectDialogProps) {
+export function CreateProjectDialog({
+  hackathonId,
+  trigger,
+  onSuccess,
+}: CreateProjectDialogProps) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,7 +47,7 @@ export function CreateProjectDialog({ hackathonId, trigger, onSuccess }: CreateP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!session?.user?.username) {
       toast.error("You must be logged in to submit a project");
       return;
@@ -93,59 +97,58 @@ export function CreateProjectDialog({ hackathonId, trigger, onSuccess }: CreateP
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const addTech = () => {
     if (newTech.trim() && !formData.tech_stack.includes(newTech.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tech_stack: [...prev.tech_stack, newTech.trim()]
+        tech_stack: [...prev.tech_stack, newTech.trim()],
       }));
       setNewTech("");
     }
   };
 
   const removeTech = (tech: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tech_stack: prev.tech_stack.filter(t => t !== tech)
+      tech_stack: prev.tech_stack.filter((t) => t !== tech),
     }));
   };
 
   const addMember = () => {
     if (newMember.trim() && !formData.team_members.includes(newMember.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        team_members: [...prev.team_members, newMember.trim()]
+        team_members: [...prev.team_members, newMember.trim()],
       }));
       setNewMember("");
     }
   };
 
   const removeMember = (member: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      team_members: prev.team_members.filter(m => m !== member)
+      team_members: prev.team_members.filter((m) => m !== member),
     }));
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overAVAX-y-auto">
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overMonad-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Code className="w-5 h-5" />
             Submit New Project
           </DialogTitle>
           <DialogDescription>
-            Submit your decentralized application (dApp) to this hackathon for community voting.
+            Submit your decentralized application (dApp) to this hackathon for
+            community voting.
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="project_name">Project Name *</Label>
@@ -209,7 +212,9 @@ export function CreateProjectDialog({ hackathonId, trigger, onSuccess }: CreateP
                 placeholder="Add technology (e.g., React, Solidity)"
                 value={newTech}
                 onChange={(e) => setNewTech(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTech())}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), addTech())
+                }
               />
               <Button type="button" onClick={addTech} size="sm">
                 <Plus className="w-4 h-4" />
@@ -241,7 +246,9 @@ export function CreateProjectDialog({ hackathonId, trigger, onSuccess }: CreateP
                 placeholder="Add team member username"
                 value={newMember}
                 onChange={(e) => setNewMember(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addMember())}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), addMember())
+                }
               />
               <Button type="button" onClick={addMember} size="sm">
                 <Plus className="w-4 h-4" />

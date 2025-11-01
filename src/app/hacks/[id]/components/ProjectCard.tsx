@@ -1,18 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  GitBranch, 
-  ExternalLink, 
-  Users, 
-  Code, 
+import {
+  GitBranch,
+  ExternalLink,
+  Users,
+  Code,
   Calendar,
   Star,
-  Eye
+  Eye,
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -74,10 +80,12 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
 
   const fetchRepoData = async () => {
     if (!repoInfo) return;
-    
+
     setLoading(true);
     try {
-      const response = await fetch(`https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}`);
+      const response = await fetch(
+        `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}`
+      );
       if (response.ok) {
         const data = await response.json();
         setRepoData(data);
@@ -101,7 +109,7 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
   return (
     <Card className="group hover:shadow-lg transition-all duration-200 border border-neutral-200 dark:border-neutral-700">
       {project.image_url && (
-        <div className="relative h-32 overAVAX-hidden rounded-t-lg">
+        <div className="relative h-32 overMonad-hidden rounded-t-lg">
           <img
             src={project.image_url}
             alt={project.project_name}
@@ -109,11 +117,15 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
           />
         </div>
       )}
-      
+
       <CardHeader className={compact ? "pb-2" : ""}>
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className={`${compact ? "text-base" : "text-lg"} line-clamp-2 group-hover:text-blue-600 transition-colors`}>
+            <CardTitle
+              className={`${
+                compact ? "text-base" : "text-lg"
+              } line-clamp-2 group-hover:text-blue-600 transition-colors`}
+            >
               {project.project_name}
             </CardTitle>
             <div className="flex items-center gap-2 mt-2 text-sm text-neutral-600 dark:text-neutral-400">
@@ -130,7 +142,7 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
             </div>
           </div>
         </div>
-        
+
         {project.description && !compact && (
           <CardDescription className="line-clamp-2 mt-2">
             {project.description}
@@ -142,11 +154,13 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
         {/* Tech Stack */}
         {techStack.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {techStack.slice(0, compact ? 3 : 6).map((tech: string, index: number) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                {tech}
-              </Badge>
-            ))}
+            {techStack
+              .slice(0, compact ? 3 : 6)
+              .map((tech: string, index: number) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {tech}
+                </Badge>
+              ))}
             {techStack.length > (compact ? 3 : 6) && (
               <Badge variant="outline" className="text-xs">
                 +{techStack.length - (compact ? 3 : 6)} more
@@ -177,13 +191,16 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
         {project.contract_address && !compact && (
           <div className="p-2 bg-neutral-100 dark:bg-neutral-800 rounded text-xs font-mono">
             <div className="flex items-center justify-between">
-              <span className="text-neutral-600 dark:text-neutral-400">Contract:</span>
+              <span className="text-neutral-600 dark:text-neutral-400">
+                Contract:
+              </span>
               <Link
                 href={`https://etherscan.io/address/${project.contract_address}`}
                 target="_blank"
                 className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
               >
-                {project.contract_address.slice(0, 6)}...{project.contract_address.slice(-4)}
+                {project.contract_address.slice(0, 6)}...
+                {project.contract_address.slice(-4)}
                 <ExternalLink className="w-3 h-3" />
               </Link>
             </div>
@@ -192,21 +209,20 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <Button 
-            asChild 
-            className="flex-1"
-            size={compact ? "sm" : "default"}
-          >
-            <Link href={`/hacks/project/${project.id}`} className="flex items-center gap-2">
+          <Button asChild className="flex-1" size={compact ? "sm" : "default"}>
+            <Link
+              href={`/hacks/project/${project.id}`}
+              className="flex items-center gap-2"
+            >
               <Code className="w-4 h-4" />
               View Project
             </Link>
           </Button>
-          
+
           {project.repository && (
-            <Button 
-              asChild 
-              variant="outline" 
+            <Button
+              asChild
+              variant="outline"
               size={compact ? "sm" : "icon"}
               className="hover:bg-neutral-100 dark:hover:bg-neutral-800"
             >
@@ -222,9 +238,7 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
         {!compact && (
           <div className="pt-2 border-t border-neutral-200 dark:border-neutral-700">
             <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
-              <span>
-                Submitted {formatDate(project.created_at)}
-              </span>
+              <span>Submitted {formatDate(project.created_at)}</span>
               <div className="flex items-center gap-2">
                 <Calendar className="w-3 h-3" />
                 <span>{formatDate(project.created_at)}</span>
@@ -236,7 +250,9 @@ export function ProjectCard({ project, compact = false }: ProjectCardProps) {
         {/* Team Members */}
         {teamMembers.length > 0 && !compact && (
           <div className="pt-2 border-t border-neutral-200 dark:border-neutral-700">
-            <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Team Members:</div>
+            <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">
+              Team Members:
+            </div>
             <div className="flex flex-wrap gap-1">
               {teamMembers.map((member: string, index: number) => (
                 <Badge key={index} variant="outline" className="text-xs">

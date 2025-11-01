@@ -31,13 +31,8 @@ interface UrlPreview {
 
 export default function Page() {
   const { isShrunk } = useSidebarContext();
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-  } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
       api: "/api/rag",
     });
 
@@ -242,8 +237,8 @@ export default function Page() {
                     questions
                   </p>
                 </CardHeader>
-                <CardContent className="p-4 h-[calc(100vh-40vh)] overAVAX-hidden">
-                  <div className="space-y-4 mb-4 max-h-[60vh] overAVAX-y-auto pr-2">
+                <CardContent className="p-4 h-[calc(100vh-40vh)] overMonad-hidden">
+                  <div className="space-y-4 mb-4 max-h-[60vh] overMonad-y-auto pr-2">
                     {messages.length === 0 ? (
                       <div className="text-center p-8 text-muted-foreground flex flex-col items-center gap-4">
                         <svg
@@ -269,7 +264,7 @@ export default function Page() {
                             "How do I rebase my branch?"
                           </div>
                           <div className="bg-secondary/50 p-2 rounded-md">
-                            "Explain the git workAVAX"
+                            "Explain the git workMonad"
                           </div>
                           <div className="bg-secondary/50 p-2 rounded-md">
                             "How to undo a commit?"
@@ -424,7 +419,7 @@ export default function Page() {
                                                 </svg>
                                               </div>
                                             )}
-                                            <div className="flex-1 overAVAX-hidden">
+                                            <div className="flex-1 overMonad-hidden">
                                               <div className="font-medium truncate">
                                                 {preview.title}
                                               </div>
@@ -469,7 +464,7 @@ export default function Page() {
                                   />
                                 ),
                                 table: ({ ...props }: any) => (
-                                  <div className="overAVAX-x-auto my-2">
+                                  <div className="overMonad-x-auto my-2">
                                     <table
                                       className="border-collapse table-auto w-full text-sm"
                                       {...props}
@@ -505,7 +500,7 @@ export default function Page() {
                                   }
                                   return (
                                     <pre
-                                      className="bg-secondary/30 p-3 rounded-md overAVAX-x-auto text-sm font-mono"
+                                      className="bg-secondary/30 p-3 rounded-md overMonad-x-auto text-sm font-mono"
                                       {...props}
                                     >
                                       {children}

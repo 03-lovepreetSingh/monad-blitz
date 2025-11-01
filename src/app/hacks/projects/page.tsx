@@ -5,27 +5,33 @@ import { useSession } from "next-auth/react";
 import Sidebar from "@/assets/components/sidebar";
 import Topbar from "@/assets/components/topbar";
 import { useSidebarContext } from "@/assets/components/SidebarContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { 
+import {
   ArrowLeft,
-  Search, 
-  Filter, 
-  Code, 
+  Search,
+  Filter,
+  Code,
   GitBranch,
   Star,
   Users,
   Calendar,
-  ExternalLink
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -76,10 +82,10 @@ export default function AllProjectsPage() {
     try {
       setLoading(true);
       const hackathonsResult = await getAllHackathons();
-      
+
       if (hackathonsResult.success && hackathonsResult.hackathons) {
         setHackathons(hackathonsResult.hackathons);
-        
+
         // Fetch projects for all hackathons
         const allProjects: Project[] = [];
         for (const hackathon of hackathonsResult.hackathons) {
@@ -87,14 +93,19 @@ export default function AllProjectsPage() {
             const response = await fetch(`/api/hacks/${hackathon.id}/projects`);
             if (response.ok) {
               const projectsData = await response.json();
-              const projectsWithHackathon = projectsData.map((project: any) => ({
-                ...project,
-                hackathon
-              }));
+              const projectsWithHackathon = projectsData.map(
+                (project: any) => ({
+                  ...project,
+                  hackathon,
+                })
+              );
               allProjects.push(...projectsWithHackathon);
             }
           } catch (error) {
-            console.error(`Error fetching projects for hackathon ${hackathon.id}:`, error);
+            console.error(
+              `Error fetching projects for hackathon ${hackathon.id}:`,
+              error
+            );
           }
         }
         setProjects(allProjects);
@@ -109,10 +120,12 @@ export default function AllProjectsPage() {
   // Get unique tech stack items for filtering
   const getAllTechStack = () => {
     const techSet = new Set<string>();
-    projects.forEach(project => {
+    projects.forEach((project) => {
       try {
-        const techStack = Array.isArray(project.tech_stack) ? project.tech_stack : [];
-        techStack.forEach(tech => techSet.add(tech));
+        const techStack = Array.isArray(project.tech_stack)
+          ? project.tech_stack
+          : [];
+        techStack.forEach((tech) => techSet.add(tech));
       } catch (error) {
         // Ignore parsing errors
       }
@@ -120,23 +133,28 @@ export default function AllProjectsPage() {
     return Array.from(techSet).sort();
   };
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.project_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         project.owner_id.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesHackathon = hackathonFilter === "all" || project.hackathon_id === hackathonFilter;
-    
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch =
+      project.project_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (project.description &&
+        project.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      project.owner_id.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesHackathon =
+      hackathonFilter === "all" || project.hackathon_id === hackathonFilter;
+
     let matchesTech = techFilter === "all";
     if (!matchesTech && techFilter !== "all") {
       try {
-        const techStack = Array.isArray(project.tech_stack) ? project.tech_stack : [];
+        const techStack = Array.isArray(project.tech_stack)
+          ? project.tech_stack
+          : [];
         matchesTech = techStack.includes(techFilter);
       } catch (error) {
         matchesTech = false;
       }
     }
-    
+
     return matchesSearch && matchesHackathon && matchesTech;
   });
 
@@ -152,9 +170,13 @@ export default function AllProjectsPage() {
   return (
     <div className="flex h-screen bg-neutral-50 dark:bg-neutral-900 mt-16">
       <Sidebar />
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${isShrunk ? "ml-16" : "ml-64"}`}>
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          isShrunk ? "ml-16" : "ml-64"
+        }`}
+      >
         <Topbar />
-        <main className="flex-1 overAVAX-auto p-6">
+        <main className="flex-1 overMonad-auto p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -202,7 +224,7 @@ export default function AllProjectsPage() {
                         Active Hackathons
                       </p>
                       <p className="text-2xl font-bold text-neutral-900 dark:text-white">
-                        {hackathons.filter(h => h.status === "active").length}
+                        {hackathons.filter((h) => h.status === "active").length}
                       </p>
                     </div>
                     <Calendar className="w-8 h-8 text-green-600" />
@@ -234,7 +256,7 @@ export default function AllProjectsPage() {
                         Total Developers
                       </p>
                       <p className="text-2xl font-bold text-neutral-900 dark:text-white">
-                        {new Set(projects.map(p => p.owner_id)).size}
+                        {new Set(projects.map((p) => p.owner_id)).size}
                       </p>
                     </div>
                     <Users className="w-8 h-8 text-orange-600" />
@@ -256,14 +278,17 @@ export default function AllProjectsPage() {
                   />
                 </div>
               </div>
-              
-              <Select value={hackathonFilter} onValueChange={setHackathonFilter}>
+
+              <Select
+                value={hackathonFilter}
+                onValueChange={setHackathonFilter}
+              >
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Filter by hackathon" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Hackathons</SelectItem>
-                  {hackathons.map(hackathon => (
+                  {hackathons.map((hackathon) => (
                     <SelectItem key={hackathon.id} value={hackathon.id}>
                       {hackathon.name}
                     </SelectItem>
@@ -277,7 +302,7 @@ export default function AllProjectsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Technologies</SelectItem>
-                  {getAllTechStack().map(tech => (
+                  {getAllTechStack().map((tech) => (
                     <SelectItem key={tech} value={tech}>
                       {tech}
                     </SelectItem>
@@ -291,7 +316,9 @@ export default function AllProjectsPage() {
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 Showing {filteredProjects.length} of {projects.length} projects
               </p>
-              {(searchTerm || hackathonFilter !== "all" || techFilter !== "all") && (
+              {(searchTerm ||
+                hackathonFilter !== "all" ||
+                techFilter !== "all") && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -328,7 +355,9 @@ export default function AllProjectsPage() {
                 filteredProjects.map((project) => {
                   const techStack = (() => {
                     try {
-                      return Array.isArray(project.tech_stack) ? project.tech_stack : [];
+                      return Array.isArray(project.tech_stack)
+                        ? project.tech_stack
+                        : [];
                     } catch {
                       return [];
                     }
@@ -336,16 +365,21 @@ export default function AllProjectsPage() {
 
                   const teamMembers = (() => {
                     try {
-                      return Array.isArray(project.team_members) ? project.team_members : [];
+                      return Array.isArray(project.team_members)
+                        ? project.team_members
+                        : [];
                     } catch {
                       return [];
                     }
                   })();
 
                   return (
-                    <Card key={project.id} className="group hover:shadow-lg transition-all duration-200">
+                    <Card
+                      key={project.id}
+                      className="group hover:shadow-lg transition-all duration-200"
+                    >
                       {project.image_url && (
-                        <div className="relative h-32 overAVAX-hidden rounded-t-lg">
+                        <div className="relative h-32 overMonad-hidden rounded-t-lg">
                           <img
                             src={project.image_url}
                             alt={project.project_name}
@@ -353,7 +387,7 @@ export default function AllProjectsPage() {
                           />
                         </div>
                       )}
-                      
+
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg line-clamp-2 group-hover:text-blue-600 transition-colors">
                           {project.project_name}
@@ -370,7 +404,7 @@ export default function AllProjectsPage() {
                             </>
                           )}
                         </div>
-                        
+
                         {project.hackathon && (
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="text-xs">
@@ -390,11 +424,17 @@ export default function AllProjectsPage() {
                         {/* Tech Stack */}
                         {techStack.length > 0 && (
                           <div className="flex flex-wrap gap-1">
-                            {techStack.slice(0, 4).map((tech: string, index: number) => (
-                              <Badge key={index} variant="secondary" className="text-xs">
-                                {tech}
-                              </Badge>
-                            ))}
+                            {techStack
+                              .slice(0, 4)
+                              .map((tech: string, index: number) => (
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
+                                  {tech}
+                                </Badge>
+                              ))}
                             {techStack.length > 4 && (
                               <Badge variant="outline" className="text-xs">
                                 +{techStack.length - 4} more
@@ -406,16 +446,19 @@ export default function AllProjectsPage() {
                         {/* Action Buttons */}
                         <div className="flex gap-2">
                           <Button asChild className="flex-1" size="sm">
-                            <Link href={`/hacks/project/${project.id}`} className="flex items-center gap-2">
+                            <Link
+                              href={`/hacks/project/${project.id}`}
+                              className="flex items-center gap-2"
+                            >
                               <Code className="w-4 h-4" />
                               View Project
                             </Link>
                           </Button>
-                          
+
                           {project.repository && (
-                            <Button 
-                              asChild 
-                              variant="outline" 
+                            <Button
+                              asChild
+                              variant="outline"
                               size="sm"
                               className="hover:bg-neutral-100 dark:hover:bg-neutral-800"
                             >
@@ -429,14 +472,13 @@ export default function AllProjectsPage() {
                         {/* Additional info */}
                         <div className="pt-2 border-t border-neutral-200 dark:border-neutral-700">
                           <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
-                            <span>
-                              {formatDate(project.created_at)}
-                            </span>
-                            <Link 
+                            <span>{formatDate(project.created_at)}</span>
+                            <Link
                               href={`/hacks/${project.hackathon_id}`}
                               className="flex items-center gap-1 hover:text-blue-600 transition-colors"
                             >
-                              View Hackathon <ExternalLink className="w-3 h-3" />
+                              View Hackathon{" "}
+                              <ExternalLink className="w-3 h-3" />
                             </Link>
                           </div>
                         </div>
@@ -451,13 +493,16 @@ export default function AllProjectsPage() {
                     No projects found
                   </h3>
                   <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-                    {searchTerm || hackathonFilter !== "all" || techFilter !== "all"
+                    {searchTerm ||
+                    hackathonFilter !== "all" ||
+                    techFilter !== "all"
                       ? "Try adjusting your search criteria or filters"
-                      : "No projects have been submitted yet"
-                    }
+                      : "No projects have been submitted yet"}
                   </p>
-                  {(searchTerm || hackathonFilter !== "all" || techFilter !== "all") && (
-                    <Button 
+                  {(searchTerm ||
+                    hackathonFilter !== "all" ||
+                    techFilter !== "all") && (
+                    <Button
                       variant="outline"
                       onClick={() => {
                         setSearchTerm("");

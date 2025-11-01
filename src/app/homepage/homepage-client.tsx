@@ -10,7 +10,7 @@ import Link from "next/link";
 import Sidebar from "../../assets/components/sidebar";
 import Topbar from "../../assets/components/topbar";
 import Issue from "../../assets/components/issue";
-import {ProjectTable as ProjectType} from '@/db/types'
+import { ProjectTable as ProjectType } from "@/db/types";
 import { BorderBeam } from "../../components/magicui/border-beam";
 import { EarningScroll } from "../../components/ui/earningScroll";
 import { Icon } from "@iconify/react";
@@ -64,9 +64,9 @@ interface session {
   };
 }
 
-interface upocommingData{
+interface upocommingData {
   session: Session | null;
-  repoData:ProjectType[];
+  repoData: ProjectType[];
 }
 
 const testimonials2 = [
@@ -113,10 +113,10 @@ const testimonials2 = [
   {
     key: "14",
     repoName: "LangChainify",
-    repoTitle: "LLM WorkAVAX Orchestrator",
+    repoTitle: "LLM WorkMonad Orchestrator",
     personName: "Sophia Lee",
     date: "2025-07-29",
-    tags: ["llm", "ai", "workAVAX"],
+    tags: ["llm", "ai", "workMonad"],
   },
   {
     key: "15",
@@ -248,7 +248,7 @@ const testimonials2 = [
   },
 ];
 
-export default function Home({session,repoData}:upocommingData) {
+export default function Home({ session, repoData }: upocommingData) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredRepos, setFilteredRepos] = useState<Project[]>([]);
   const { isShrunk } = useSidebarContext();
@@ -283,7 +283,6 @@ export default function Home({session,repoData}:upocommingData) {
       setFilteredRepos(filtered);
     }
   }, [searchTerm, repoData]);
- 
 
   const Icons = {
     openwave: () => (
@@ -305,7 +304,7 @@ export default function Home({session,repoData}:upocommingData) {
         />
       </svg>
     ),
-    AVAX: () => (
+    Monad: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="100"
@@ -585,7 +584,7 @@ export default function Home({session,repoData}:upocommingData) {
 
                 <div className="z-10 grid grid-cols-1 lg:grid-cols-2 sm:flex-row  py-4 gap-4 sm:gap-5">
                   <Link href="/Browse">
-                    <Card className="z-10  relative overAVAX-hidden">
+                    <Card className="z-10  relative overMonad-hidden">
                       <CardHeader>
                         <CardTitle>
                           <h3 className="text-[14px] flex">
@@ -622,7 +621,7 @@ export default function Home({session,repoData}:upocommingData) {
                     </Card>
                   </Link>
                   <Link href="/GitBot">
-                    <Card className="z-10  relative  overAVAX-hidden">
+                    <Card className="z-10  relative  overMonad-hidden">
                       <CardHeader>
                         <CardTitle>
                           <h3 className="text-[14px] flex">
@@ -665,42 +664,35 @@ export default function Home({session,repoData}:upocommingData) {
                       code in.
                     </p>
                     <div className="my-10 grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-                      
-                          {repoData.map((repo: any) => {
-                            
-
-                            return (
-                              <div
-                                key={repo.projectName}
-                                className="hover:scale-[1.02] transition-transform duration-200"
-                              >
-                                <Link
-                                  href={`/projects/${repo.project_repository}`}
-                                >
-                                  <Issue
-                                    image={repo.image_url || "back_2.png"}
-                                    Project={repo.project_repository}
-                                    activeUser={
-                                      session?.user?.username || undefined
-                                    }
-                                    Fork={repo.forks ? repo.forks : 0}
-                                    Stars={repo.stars ? repo.stars : 0}
-                                    Contributors={
-                                      repo.contributors &&
-                                      repo.contributors.collabs
-                                        ? Object.keys(repo.contributors.collabs)
-                                            .length
-                                        : 0
-                                    }
-                                    shortDescription={repo.shortdes}
-                                    languages={repo.languages}
-                                    Tag={repo.type ? repo.type : "General"}
-                                  />
-                                </Link>
-                              </div>
-                            );
-                          })}
-                        
+                      {repoData.map((repo: any) => {
+                        return (
+                          <div
+                            key={repo.projectName}
+                            className="hover:scale-[1.02] transition-transform duration-200"
+                          >
+                            <Link href={`/projects/${repo.project_repository}`}>
+                              <Issue
+                                image={repo.image_url || "back_2.png"}
+                                Project={repo.project_repository}
+                                activeUser={
+                                  session?.user?.username || undefined
+                                }
+                                Fork={repo.forks ? repo.forks : 0}
+                                Stars={repo.stars ? repo.stars : 0}
+                                Contributors={
+                                  repo.contributors && repo.contributors.collabs
+                                    ? Object.keys(repo.contributors.collabs)
+                                        .length
+                                    : 0
+                                }
+                                shortDescription={repo.shortdes}
+                                languages={repo.languages}
+                                Tag={repo.type ? repo.type : "General"}
+                              />
+                            </Link>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -805,7 +797,7 @@ export default function Home({session,repoData}:upocommingData) {
                               Get Paid for Your Work
                             </div>
                             <div className="text-[12px] text-neutral-400">
-                              in AVAX
+                              in Monad
                             </div>
                           </div>
                         </div>

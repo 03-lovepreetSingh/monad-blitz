@@ -9,12 +9,11 @@ import { useSidebarContext } from "../../assets/components/SidebarContext";
 import { Octokit } from "octokit";
 
 interface User {
-    username?: string;
-    email?: string;
-    name?: string;
-    image?: string;
+  username?: string;
+  email?: string;
+  name?: string;
+  image?: string;
 }
-
 
 interface session {
   accessToken?: string;
@@ -27,13 +26,7 @@ interface session {
   };
 }
 
-
-
-export default function PullRequestsPage({
-  repo_name
-}: {
-  repo_name: string;
-}) {
+export default function PullRequestsPage({ repo_name }: { repo_name: string }) {
   const { data: session } = useSession();
   const router = useRouter();
   const { isShrunk } = useSidebarContext();
@@ -237,7 +230,6 @@ export default function PullRequestsPage({
     <>
       <div className="">
         <div className="w-[calc(100%)]">
-        
           <div className="p-4 sm:p-6 lg:p-8  w-full mx-auto">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
               Contributor Requests
@@ -307,7 +299,7 @@ export default function PullRequestsPage({
                         >
                           <div className="flex items-center gap-3 mb-3">
                             <img
-                              src={req.image_url }
+                              src={req.image_url}
                               alt={req.Contributor_id}
                               className="w-10 h-10 rounded-full bg-neutral-200"
                             />
@@ -417,7 +409,7 @@ export default function PullRequestsPage({
                     </div>
 
                     {/* Desktop Table View */}
-                    <div className="hidden md:block overAVAX-x-auto rounded-lg border border-neutral-200 dark:border-neutral-900">
+                    <div className="hidden md:block overMonad-x-auto rounded-lg border border-neutral-200 dark:border-neutral-900">
                       <table className="min-w-full bg-white dark:bg-neutral">
                         <thead>
                           <tr className="text-xs text-neutral-500 uppercase bg-neutral-50 dark:bg-neutral-900">
@@ -438,7 +430,7 @@ export default function PullRequestsPage({
                             >
                               <td className="px-4 py-3 flex items-center gap-3">
                                 <img
-                                  src={req.image_url }
+                                  src={req.image_url}
                                   alt={req.Contributor_id}
                                   className="w-8 h-8 rounded-full bg-neutral-200"
                                 />

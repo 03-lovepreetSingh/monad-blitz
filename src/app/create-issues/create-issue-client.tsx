@@ -34,8 +34,8 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Wallet, AlertCircle, CheckCircle } from "lucide-react";
 import { User } from "@/db/types";
-import {IssueWalletABI} from '../../../abi'
-import {IssueWalletByteCode} from '../../../bytecode'
+import { IssueWalletABI } from "../../../abi";
+import { IssueWalletByteCode } from "../../../bytecode";
 import { useEffect, useState } from "react";
 import { ProjectTable } from "@/db/types";
 interface CustomUser {
@@ -86,19 +86,27 @@ interface SessionData {
 interface CreateIssueClientProps {
   session: { session: Session };
   managedProjects: ProjectTable[];
-  userProfile: User 
+  userProfile: User;
 }
 
-export default function CreateIssueClient({ session, managedProjects,userProfile }: CreateIssueClientProps) {
+export default function CreateIssueClient({
+  session,
+  managedProjects,
+  userProfile,
+}: CreateIssueClientProps) {
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const [contractAddress, setContractAddress] = useState("");
   const [isDeploying, setIsDeploying] = useState(false);
   const [error, setError] = useState("");
-  const [userData, setUserData] = useState<User >(userProfile);
+  const [userData, setUserData] = useState<User>(userProfile);
   const [issueUrl, setIssueUrl] = useState<string | undefined>();
-  const [token, setToken] = useState<string>(session?.session?.accessToken || "");
-  const [user, setUser] = useState<string | undefined>(session?.session?.user?.username);
+  const [token, setToken] = useState<string>(
+    session?.session?.accessToken || ""
+  );
+  const [user, setUser] = useState<string | undefined>(
+    session?.session?.user?.username
+  );
   const [selectedRepo, setSelectedRepo] = useState<string | undefined>();
   const [data, setData] = useState<ProjectTable[]>(managedProjects);
   const [issues, setIssues] = useState<Issue[]>([]);
@@ -136,14 +144,14 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
       const constructorArgs = [BigInt(100)]; // Initial contract balance
       const hash = await walletClient.deployContract({
         abi: IssueWalletABI,
-        bytecode:IssueWalletByteCode as `0x${string}`,
+        bytecode: IssueWalletByteCode as `0x${string}`,
       });
 
       const receipt = await publicClient.waitForTransactionReceipt({
         hash,
         timeout: 60000, // 60 second timeout
       });
-      console.log(receipt,"teggsffss")
+      console.log(receipt, "teggsffss");
       if (!receipt.contractAddress) {
         throw new Error("Contract deployment failed - no address in receipt");
       }
@@ -211,9 +219,6 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
     hash: writeData,
   });
   // Set token and user from session
-  
-
-
 
   useEffect(() => {
     if (alertMessage) {
@@ -227,7 +232,6 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
   // Set token and user from session
 
   // Fetch repositories
-
 
   useEffect(() => {
     if (!userData) return;
@@ -347,11 +351,15 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
       return;
     }
     if (!isConnected || !userData?.maintainerWallet) {
-      console.log(isConnected,userData?.maintainerWallet,"wallet connected or not");
-    console.log("userData", userData);
+      console.log(
+        isConnected,
+        userData?.maintainerWallet,
+        "wallet connected or not"
+      );
+      console.log("userData", userData);
       return setAlertMessage("Connect your wallet first!");
     }
-    console.log(isConnected,"wallet connected or not");
+    console.log(isConnected, "wallet connected or not");
     console.log("userData", userData?.maintainerWallet);
     if (
       !userData?.maintainerWallet ||
@@ -377,7 +385,7 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
 
       writeContract({
         address: userData.maintainerWallet as `0x${string}`,
-        abi:IssueWalletABI,
+        abi: IssueWalletABI,
         functionName: "deposit",
         value: parseEther(rewardAmount as string),
       });
@@ -400,9 +408,9 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
   return (
     <>
       <Suspense>
-      <Sidebar />
-          <div
-            className={`
+        <Sidebar />
+        <div
+          className={`
               flex-1 transition-all duration-300 ease-in-out
               ${
                 isMobile
@@ -412,61 +420,60 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
                   : "ml-64 w-[calc(100%-16rem)]"
               }
             `}
-          >
-            <Topbar />
-        {/* Alert Messages - Responsive positioning */}
-        <div className="fixed bottom-4 right-4 z-[100] max-w-sm w-full">
-          {alertMessage && (
-            <Alert
-              className={`mb-2 ${
-                isConfirmed
-                  ? "bg-green-100 border-green-400 text-green-700"
-                  : confirmationError || writeError
-                  ? "bg-red-100 border-red-400 text-red-700"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                {isConfirmed ? (
-                  <CheckCircle className="h-4 w-4" />
-                ) : confirmationError || writeError ? (
-                  <AlertCircle className="h-4 w-4" />
-                ) : (
-                  <AlertCircle className="h-4 w-4" />
-                )}
-                <AlertTitle className="text-sm">
-                  {isConfirmed
-                    ? "Success"
+        >
+          <Topbar />
+          {/* Alert Messages - Responsive positioning */}
+          <div className="fixed bottom-4 right-4 z-[100] max-w-sm w-full">
+            {alertMessage && (
+              <Alert
+                className={`mb-2 ${
+                  isConfirmed
+                    ? "bg-green-100 border-green-400 text-green-700"
                     : confirmationError || writeError
-                    ? "Error"
-                    : "Notice"}
-                </AlertTitle>
-              </div>
-              <AlertDescription className="text-sm mt-1">
-                {alertMessage}
-              </AlertDescription>
-            </Alert>
-          )}
-          {(isWritePending || isConfirming) && (
-            <Alert className="bg-blue-100 border-blue-400 text-blue-700">
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <AlertTitle className="text-sm">
-                  Processing Transaction
-                </AlertTitle>
-              </div>
-              <AlertDescription className="text-sm mt-1">
-                {isWritePending &&
-                  !isConfirming &&
-                  "Please confirm in your wallet..."}
-                {isConfirming && "Waiting for transaction confirmation..."}
-              </AlertDescription>
-            </Alert>
-          )}
-        </div>
+                    ? "bg-red-100 border-red-400 text-red-700"
+                    : ""
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {isConfirmed ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : confirmationError || writeError ? (
+                    <AlertCircle className="h-4 w-4" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4" />
+                  )}
+                  <AlertTitle className="text-sm">
+                    {isConfirmed
+                      ? "Success"
+                      : confirmationError || writeError
+                      ? "Error"
+                      : "Notice"}
+                  </AlertTitle>
+                </div>
+                <AlertDescription className="text-sm mt-1">
+                  {alertMessage}
+                </AlertDescription>
+              </Alert>
+            )}
+            {(isWritePending || isConfirming) && (
+              <Alert className="bg-blue-100 border-blue-400 text-blue-700">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <AlertTitle className="text-sm">
+                    Processing Transaction
+                  </AlertTitle>
+                </div>
+                <AlertDescription className="text-sm mt-1">
+                  {isWritePending &&
+                    !isConfirming &&
+                    "Please confirm in your wallet..."}
+                  {isConfirming && "Waiting for transaction confirmation..."}
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
 
-        <div className="flex min-h-screen">
-          
+          <div className="flex min-h-screen">
             {wallet ? (
               <>
                 <div className="mt-16 md:mt-20 p-4 sm:p-6 lg:p-8">
@@ -627,7 +634,7 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
                                 htmlFor="rewardAmount"
                                 className="text-sm font-medium"
                               >
-                                Reward Amount (AVAX) *
+                                Reward Amount (Monad) *
                               </Label>
                               <Input
                                 id="rewardAmount"
@@ -834,9 +841,8 @@ export default function CreateIssueClient({ session, managedProjects,userProfile
               </div>
             )}
           </div>
-          </div>
+        </div>
       </Suspense>
     </>
   );
 }
-

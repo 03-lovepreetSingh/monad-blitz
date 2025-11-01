@@ -7,14 +7,20 @@ import { useAccount, useWriteContract } from "wagmi";
 import Sidebar from "@/assets/components/sidebar";
 import Topbar from "@/assets/components/topbar";
 import { useSidebarContext } from "@/assets/components/SidebarContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { 
+import {
   ArrowLeft,
   ExternalLink,
   GitBranch,
@@ -27,33 +33,37 @@ import {
   Circle,
   Loader2,
   Trophy,
-  Vote
+  Vote,
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { parseEther } from "viem";
 import { toast } from "sonner";
-import { 
+import {
   castVote,
   createSplitPayment,
-  getProjectSplitPayments
+  getProjectSplitPayments,
 } from "@/actions/hacks";
 import { HACK_SPLIT_SOL_CONTRACT_ADDRESS } from "@/assets/hack-split";
 import hackSplitABI from "@/assets/abi-hack-split.json";
 import { Project, ProjectVotes, SplitPayment } from "@/db/types";
 
 export default function ProjectPageClient({
-    project,
-    votes,
-    payments
-}: {project: Project | null, votes: ProjectVotes[], payments: SplitPayment[]}) {
+  project,
+  votes,
+  payments,
+}: {
+  project: Project | null;
+  votes: ProjectVotes[];
+  payments: SplitPayment[];
+}) {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const { isShrunk } = useSidebarContext();
-  
+
   const [repoData, setRepoData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [votingLoading, setVotingLoading] = useState(false);
@@ -71,7 +81,7 @@ export default function ProjectPageClient({
       const result = await castVote({
         project_id: project.id,
         voter_id: session.user.username,
-        vote_type: voteType
+        vote_type: voteType,
       });
 
       if (result.success) {
@@ -93,12 +103,18 @@ export default function ProjectPageClient({
       return { contributorShare: 50, maintainerShare: 50 };
     }
 
-    const contributorPercentage = (votes.filter((vote) => vote.vote_type === "contributor").length / votes.length) * 100;
-    const maintainerPercentage = (votes.filter((vote) => vote.vote_type === "maintainer").length / votes.length) * 100;
+    const contributorPercentage =
+      (votes.filter((vote) => vote.vote_type === "contributor").length /
+        votes.length) *
+      100;
+    const maintainerPercentage =
+      (votes.filter((vote) => vote.vote_type === "maintainer").length /
+        votes.length) *
+      100;
 
     return {
       contributorShare: contributorPercentage,
-      maintainerShare: maintainerPercentage
+      maintainerShare: maintainerPercentage,
     };
   };
 
@@ -117,10 +133,12 @@ export default function ProjectPageClient({
     try {
       const amount = parseEther(splitAmount);
       const split = calculateSplit();
-      
+
       // Calculate actual ETH amounts
-      const contributorAmount = (amount * BigInt(Math.floor(split.contributorShare))) / BigInt(100);
-      const maintainerAmount = (amount * BigInt(Math.floor(split.maintainerShare))) / BigInt(100);
+      const contributorAmount =
+        (amount * BigInt(Math.floor(split.contributorShare))) / BigInt(100);
+      const maintainerAmount =
+        (amount * BigInt(Math.floor(split.maintainerShare))) / BigInt(100);
 
       // Call smart contract
       writeContract({
@@ -141,8 +159,8 @@ export default function ProjectPageClient({
       const paymentResult = await createSplitPayment({
         project_id: project.id,
         total_amount: splitAmount,
-        contributor_share: (contributorAmount / BigInt(10**18)).toString(),
-        maintainer_share: (maintainerAmount / BigInt(10**18)).toString(),
+        contributor_share: (contributorAmount / BigInt(10 ** 18)).toString(),
+        maintainer_share: (maintainerAmount / BigInt(10 ** 18)).toString(),
       });
 
       if (paymentResult.success) {
@@ -151,7 +169,6 @@ export default function ProjectPageClient({
         // await getProjectVotes(project.id);
         // await getProjectSplitPayments(project.id);
       }
-
     } catch (error) {
       console.error("Error executing split:", error);
       toast.error("Failed to execute split");
@@ -179,7 +196,10 @@ export default function ProjectPageClient({
 
   const getVotePercentage = (type: "contributor" | "maintainer") => {
     if (!votes || votes.length === 0) return 0;
-    const voteCount = type === "contributor" ? votes.filter((vote) => vote.vote_type === "contributor").length : votes.filter((vote) => vote.vote_type === "maintainer").length;
+    const voteCount =
+      type === "contributor"
+        ? votes.filter((vote) => vote.vote_type === "contributor").length
+        : votes.filter((vote) => vote.vote_type === "maintainer").length;
     return (voteCount / votes.length) * 100;
   };
 
@@ -187,9 +207,13 @@ export default function ProjectPageClient({
     return (
       <div className="flex h-screen bg-neutral-50 dark:bg-neutral-900 mt-16">
         <Sidebar />
-        <div className={`flex-1 flex flex-col transition-all duration-300 ${isShrunk ? "ml-16" : "ml-64"}`}>
+        <div
+          className={`flex-1 flex flex-col transition-all duration-300 ${
+            isShrunk ? "ml-16" : "ml-64"
+          }`}
+        >
           <Topbar />
-          <main className="flex-1 overAVAX-auto p-6">
+          <main className="flex-1 overMonad-auto p-6">
             <div className="max-w-7xl mx-auto">
               <div className="animate-pulse space-y-6">
                 <div className="h-8 bg-neutral-200 rounded w-1/3"></div>
@@ -207,15 +231,20 @@ export default function ProjectPageClient({
     return (
       <div className="flex h-screen bg-neutral-50 dark:bg-neutral-900 mt-16">
         <Sidebar />
-        <div className={`flex-1 flex flex-col transition-all duration-300 ${isShrunk ? "ml-16" : "ml-64"}`}>
+        <div
+          className={`flex-1 flex flex-col transition-all duration-300 ${
+            isShrunk ? "ml-16" : "ml-64"
+          }`}
+        >
           <Topbar />
-          <main className="flex-1 overAVAX-auto p-6">
+          <main className="flex-1 overMonad-auto p-6">
             <div className="max-w-7xl mx-auto text-center py-12">
               <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
                 Project Not Found
               </h1>
               <p className="text-neutral-600 dark:text-neutral-400 mb-6">
-                The project you're looking for doesn't exist or has been removed.
+                The project you're looking for doesn't exist or has been
+                removed.
               </p>
               <Button onClick={() => router.back()}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -231,13 +260,17 @@ export default function ProjectPageClient({
   return (
     <div className="flex h-screen bg-neutral-50 dark:bg-neutral-900 mt-16">
       <Sidebar />
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${isShrunk ? "ml-16" : "ml-64"}`}>
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          isShrunk ? "ml-16" : "ml-64"
+        }`}
+      >
         <Topbar />
-        <main className="flex-1 overAVAX-auto">
+        <main className="flex-1 overMonad-auto">
           {/* Hero Section */}
           <div className="relative">
             {project.image_url && (
-              <div className="h-64 bg-gradient-to-r from-blue-600 to-purple-600 relative overAVAX-hidden">
+              <div className="h-64 bg-gradient-to-r from-blue-600 to-purple-600 relative overMonad-hidden">
                 <img
                   src={project.image_url}
                   alt={project.project_name}
@@ -246,10 +279,14 @@ export default function ProjectPageClient({
                 <div className="absolute inset-0 bg-black/30"></div>
               </div>
             )}
-            
+
             <div className="relative px-6 py-8 bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
               <div className="max-w-7xl mx-auto">
-                <Button variant="ghost" onClick={() => router.back()} className="mb-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => router.back()}
+                  className="mb-4"
+                >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
@@ -259,7 +296,7 @@ export default function ProjectPageClient({
                     <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-3">
                       {project.project_name}
                     </h1>
-                    
+
                     <div className="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400 mb-4">
                       <span>by @{project.owner_id}</span>
                       {teamMembers.length > 0 && (
@@ -272,7 +309,12 @@ export default function ProjectPageClient({
                         </>
                       )}
                       <span>•</span>
-                      <span>Created {project.created_at ? format(new Date(project.created_at), "MMM dd, yyyy") : "Unknown"}</span>
+                      <span>
+                        Created{" "}
+                        {project.created_at
+                          ? format(new Date(project.created_at), "MMM dd, yyyy")
+                          : "Unknown"}
+                      </span>
                     </div>
 
                     {project.description && (
@@ -290,10 +332,13 @@ export default function ProjectPageClient({
                           </Link>
                         </Button>
                       )}
-                      
+
                       {project.contract_address && (
                         <Button variant="outline" size="sm" asChild>
-                          <Link href={`https://etherscan.io/address/${project.contract_address}`} target="_blank">
+                          <Link
+                            href={`https://etherscan.io/address/${project.contract_address}`}
+                            target="_blank"
+                          >
                             <ExternalLink className="w-4 h-4 mr-2" />
                             View Contract
                           </Link>
@@ -325,7 +370,9 @@ export default function ProjectPageClient({
                       {techStack.length > 0 && (
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-lg">Tech Stack</CardTitle>
+                            <CardTitle className="text-lg">
+                              Tech Stack
+                            </CardTitle>
                           </CardHeader>
                           <CardContent>
                             <div className="flex flex-wrap gap-2">
@@ -343,26 +390,34 @@ export default function ProjectPageClient({
                       {repoData && (
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-lg">Repository Stats</CardTitle>
+                            <CardTitle className="text-lg">
+                              Repository Stats
+                            </CardTitle>
                           </CardHeader>
                           <CardContent>
                             <div className="grid grid-cols-3 gap-4">
                               <div className="text-center">
-                                <div className="text-2xl font-bold text-yellow-600">{repoData.stargazers_count}</div>
+                                <div className="text-2xl font-bold text-yellow-600">
+                                  {repoData.stargazers_count}
+                                </div>
                                 <div className="text-sm text-neutral-600 dark:text-neutral-400 flex items-center justify-center gap-1">
                                   <Star className="w-4 h-4" />
                                   Stars
                                 </div>
                               </div>
                               <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-600">{repoData.forks_count}</div>
+                                <div className="text-2xl font-bold text-blue-600">
+                                  {repoData.forks_count}
+                                </div>
                                 <div className="text-sm text-neutral-600 dark:text-neutral-400 flex items-center justify-center gap-1">
                                   <GitBranch className="w-4 h-4" />
                                   Forks
                                 </div>
                               </div>
                               <div className="text-center">
-                                <div className="text-2xl font-bold text-green-600">{repoData.watchers_count}</div>
+                                <div className="text-2xl font-bold text-green-600">
+                                  {repoData.watchers_count}
+                                </div>
                                 <div className="text-sm text-neutral-600 dark:text-neutral-400 flex items-center justify-center gap-1">
                                   <Eye className="w-4 h-4" />
                                   Watchers
@@ -388,22 +443,54 @@ export default function ProjectPageClient({
                           <CardContent>
                             <div className="space-y-4">
                               <div className="text-center">
-                                <div className="text-3xl font-bold text-purple-600">{votes.length}</div>
-                                <div className="text-sm text-neutral-600 dark:text-neutral-400">Total Votes</div>
+                                <div className="text-3xl font-bold text-purple-600">
+                                  {votes.length}
+                                </div>
+                                <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                                  Total Votes
+                                </div>
                               </div>
-                              
+
                               <div className="space-y-2">
                                 <div className="flex justify-between text-sm">
                                   <span>Contributors</span>
-                                  <span>{votes.filter((vote) => vote.vote_type === "contributor").length} ({getVotePercentage("contributor").toFixed(1)}%)</span>
+                                  <span>
+                                    {
+                                      votes.filter(
+                                        (vote) =>
+                                          vote.vote_type === "contributor"
+                                      ).length
+                                    }{" "}
+                                    (
+                                    {getVotePercentage("contributor").toFixed(
+                                      1
+                                    )}
+                                    %)
+                                  </span>
                                 </div>
-                                <Progress value={getVotePercentage("contributor")} className="h-2" />
-                                
+                                <Progress
+                                  value={getVotePercentage("contributor")}
+                                  className="h-2"
+                                />
+
                                 <div className="flex justify-between text-sm">
                                   <span>Maintainers</span>
-                                  <span>{votes.filter((vote) => vote.vote_type === "maintainer").length} ({getVotePercentage("maintainer").toFixed(1)}%)</span>
+                                  <span>
+                                    {
+                                      votes.filter(
+                                        (vote) =>
+                                          vote.vote_type === "maintainer"
+                                      ).length
+                                    }{" "}
+                                    (
+                                    {getVotePercentage("maintainer").toFixed(1)}
+                                    %)
+                                  </span>
                                 </div>
-                                <Progress value={getVotePercentage("maintainer")} className="h-2" />
+                                <Progress
+                                  value={getVotePercentage("maintainer")}
+                                  className="h-2"
+                                />
                               </div>
                             </div>
                           </CardContent>
@@ -414,20 +501,29 @@ export default function ProjectPageClient({
                       {teamMembers.length > 0 && (
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-lg">Team Members</CardTitle>
+                            <CardTitle className="text-lg">
+                              Team Members
+                            </CardTitle>
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-2">
                               <div className="flex items-center gap-2">
                                 <Badge variant="default">Owner</Badge>
-                                <span className="text-sm">@{project.owner_id}</span>
+                                <span className="text-sm">
+                                  @{project.owner_id}
+                                </span>
                               </div>
-                              {teamMembers.map((member: string, index: number) => (
-                                <div key={index} className="flex items-center gap-2">
-                                  <Badge variant="outline">Member</Badge>
-                                  <span className="text-sm">@{member}</span>
-                                </div>
-                              ))}
+                              {teamMembers.map(
+                                (member: string, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <Badge variant="outline">Member</Badge>
+                                    <span className="text-sm">@{member}</span>
+                                  </div>
+                                )
+                              )}
                             </div>
                           </CardContent>
                         </Card>
@@ -450,28 +546,63 @@ export default function ProjectPageClient({
                         <CardContent>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-blue-600">{votes.filter((vote) => vote.vote_type === "contributor").length}</div>
-                              <div className="text-sm text-neutral-600 dark:text-neutral-400">Contributor Votes</div>
-                              <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                                {getVotePercentage("contributor").toFixed(1)}% of total
+                              <div className="text-2xl font-bold text-blue-600">
+                                {
+                                  votes.filter(
+                                    (vote) => vote.vote_type === "contributor"
+                                  ).length
+                                }
                               </div>
-                            </div>
-                            
-                            <div className="text-center">
-                              <div className="text-2xl font-bold text-green-600">{votes.filter((vote) => vote.vote_type === "maintainer").length}</div>
-                              <div className="text-sm text-neutral-600 dark:text-neutral-400">Maintainer Votes</div>
+                              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                                Contributor Votes
+                              </div>
                               <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                                {getVotePercentage("maintainer").toFixed(1)}% of total
+                                {getVotePercentage("contributor").toFixed(1)}%
+                                of total
                               </div>
                             </div>
 
                             <div className="text-center">
-                              <div className="text-2xl font-bold text-purple-600">{votes.length}</div>
-                              <div className="text-sm text-neutral-600 dark:text-neutral-400">Total Votes</div>
-                              {votes.find((vote) => vote.voter_id === session?.user?.username) && (
-                                <Badge variant="default" className="mt-1 bg-green-100 text-green-800">
+                              <div className="text-2xl font-bold text-green-600">
+                                {
+                                  votes.filter(
+                                    (vote) => vote.vote_type === "maintainer"
+                                  ).length
+                                }
+                              </div>
+                              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                                Maintainer Votes
+                              </div>
+                              <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                                {getVotePercentage("maintainer").toFixed(1)}% of
+                                total
+                              </div>
+                            </div>
+
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-purple-600">
+                                {votes.length}
+                              </div>
+                              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                                Total Votes
+                              </div>
+                              {votes.find(
+                                (vote) =>
+                                  vote.voter_id === session?.user?.username
+                              ) && (
+                                <Badge
+                                  variant="default"
+                                  className="mt-1 bg-green-100 text-green-800"
+                                >
                                   <CheckCircle className="w-3 h-3 mr-1" />
-                                  You voted: {votes.find((vote) => vote.voter_id === session?.user?.username)?.vote_type}
+                                  You voted:{" "}
+                                  {
+                                    votes.find(
+                                      (vote) =>
+                                        vote.voter_id ===
+                                        session?.user?.username
+                                    )?.vote_type
+                                  }
                                 </Badge>
                               )}
                             </div>
@@ -484,36 +615,61 @@ export default function ProjectPageClient({
                         <CardHeader>
                           <CardTitle>Cast Your Vote</CardTitle>
                           <CardDescription>
-                            Vote for either contributors or maintainers for this project
+                            Vote for either contributors or maintainers for this
+                            project
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="flex gap-4">
                             <Button
                               onClick={() => handleVote("contributor")}
-                              disabled={!session?.user?.username || votingLoading}
-                              variant={votes.find((vote) => vote.voter_id === session?.user?.username)?.vote_type === "contributor" ? "default" : "outline"}
+                              disabled={
+                                !session?.user?.username || votingLoading
+                              }
+                              variant={
+                                votes.find(
+                                  (vote) =>
+                                    vote.voter_id === session?.user?.username
+                                )?.vote_type === "contributor"
+                                  ? "default"
+                                  : "outline"
+                              }
                               className="flex-1"
                             >
                               {votingLoading ? (
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              ) : votes.find((vote) => vote.voter_id === session?.user?.username)?.vote_type === "contributor" ? (
+                              ) : votes.find(
+                                  (vote) =>
+                                    vote.voter_id === session?.user?.username
+                                )?.vote_type === "contributor" ? (
                                 <CheckCircle className="w-4 h-4 mr-2" />
                               ) : (
                                 <Circle className="w-4 h-4 mr-2" />
                               )}
                               Vote for Contributors
                             </Button>
-                            
+
                             <Button
                               onClick={() => handleVote("maintainer")}
-                              disabled={!session?.user?.username || votingLoading}
-                              variant={votes.find((vote) => vote.voter_id === session?.user?.username)?.vote_type === "maintainer" ? "default" : "outline"}
+                              disabled={
+                                !session?.user?.username || votingLoading
+                              }
+                              variant={
+                                votes.find(
+                                  (vote) =>
+                                    vote.voter_id === session?.user?.username
+                                )?.vote_type === "maintainer"
+                                  ? "default"
+                                  : "outline"
+                              }
                               className="flex-1"
                             >
                               {votingLoading ? (
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              ) : votes.find((vote) => vote.voter_id === session?.user?.username)?.vote_type === "maintainer" ? (
+                              ) : votes.find(
+                                  (vote) =>
+                                    vote.voter_id === session?.user?.username
+                                )?.vote_type === "maintainer" ? (
                                 <CheckCircle className="w-4 h-4 mr-2" />
                               ) : (
                                 <Circle className="w-4 h-4 mr-2" />
@@ -521,7 +677,7 @@ export default function ProjectPageClient({
                               Vote for Maintainers
                             </Button>
                           </div>
-                          
+
                           {!session?.user?.username && (
                             <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-3 text-center">
                               You must be logged in to vote
@@ -557,7 +713,8 @@ export default function ProjectPageClient({
                           Payment Split Calculator
                         </CardTitle>
                         <CardDescription>
-                          Split payments between contributors and maintainers based on votes
+                          Split payments between contributors and maintainers
+                          based on votes
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
@@ -578,15 +735,33 @@ export default function ProjectPageClient({
                             <h4 className="font-medium">Split Preview:</h4>
                             <div className="space-y-2">
                               <div className="flex justify-between">
-                                <span>Contributors ({getVotePercentage("contributor").toFixed(1)}%):</span>
+                                <span>
+                                  Contributors (
+                                  {getVotePercentage("contributor").toFixed(1)}
+                                  %):
+                                </span>
                                 <span className="font-mono">
-                                  {((parseFloat(splitAmount) * getVotePercentage("contributor")) / 100).toFixed(4)} ETH
+                                  {(
+                                    (parseFloat(splitAmount) *
+                                      getVotePercentage("contributor")) /
+                                    100
+                                  ).toFixed(4)}{" "}
+                                  ETH
                                 </span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Maintainers ({getVotePercentage("maintainer").toFixed(1)}%):</span>
+                                <span>
+                                  Maintainers (
+                                  {getVotePercentage("maintainer").toFixed(1)}
+                                  %):
+                                </span>
                                 <span className="font-mono">
-                                  {((parseFloat(splitAmount) * getVotePercentage("maintainer")) / 100).toFixed(4)} ETH
+                                  {(
+                                    (parseFloat(splitAmount) *
+                                      getVotePercentage("maintainer")) /
+                                    100
+                                  ).toFixed(4)}{" "}
+                                  ETH
                                 </span>
                               </div>
                             </div>
@@ -595,7 +770,13 @@ export default function ProjectPageClient({
 
                         <Button
                           onClick={handleSplit}
-                          disabled={!splitAmount || !address || !votes || votes.length === 0 || splittingLoading}
+                          disabled={
+                            !splitAmount ||
+                            !address ||
+                            !votes ||
+                            votes.length === 0 ||
+                            splittingLoading
+                          }
                           className="w-full"
                         >
                           {splittingLoading ? (
@@ -626,19 +807,30 @@ export default function ProjectPageClient({
                         {payments.length > 0 ? (
                           <div className="space-y-3">
                             {payments.map((payment) => (
-                              <div key={payment.id} className="p-3 border border-neutral-200 dark:border-neutral-700 rounded-lg">
+                              <div
+                                key={payment.id}
+                                className="p-3 border border-neutral-200 dark:border-neutral-700 rounded-lg"
+                              >
                                 <div className="flex justify-between items-start">
                                   <div>
-                                    <div className="font-medium">{payment.total_amount} ETH</div>
-                                    <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                                      Contributors: {payment.contributor_share} ETH
+                                    <div className="font-medium">
+                                      {payment.total_amount} ETH
                                     </div>
                                     <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                                      Maintainers: {payment.maintainer_share} ETH
+                                      Contributors: {payment.contributor_share}{" "}
+                                      ETH
+                                    </div>
+                                    <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                                      Maintainers: {payment.maintainer_share}{" "}
+                                      ETH
                                     </div>
                                   </div>
-                                  <Badge 
-                                    variant={payment.status === "completed" ? "default" : "secondary"}
+                                  <Badge
+                                    variant={
+                                      payment.status === "completed"
+                                        ? "default"
+                                        : "secondary"
+                                    }
                                   >
                                     {payment.status || "pending"}
                                   </Badge>
@@ -650,7 +842,8 @@ export default function ProjectPageClient({
                                       target="_blank"
                                       className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
                                     >
-                                      View transaction <ExternalLink className="w-3 h-3" />
+                                      View transaction{" "}
+                                      <ExternalLink className="w-3 h-3" />
                                     </Link>
                                   </div>
                                 )}
@@ -682,44 +875,60 @@ export default function ProjectPageClient({
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div>
-                          <Label className="text-sm font-medium">Project Name</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">{project.project_name}</p>
+                          <Label className="text-sm font-medium">
+                            Project Name
+                          </Label>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            {project.project_name}
+                          </p>
                         </div>
-                        
+
                         {project.description && (
                           <div>
-                            <Label className="text-sm font-medium">Description</Label>
-                            <p className="text-sm text-neutral-600 dark:text-neutral-400">{project.description}</p>
+                            <Label className="text-sm font-medium">
+                              Description
+                            </Label>
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                              {project.description}
+                            </p>
                           </div>
                         )}
 
                         <div>
                           <Label className="text-sm font-medium">Owner</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">@{project.owner_id}</p>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            @{project.owner_id}
+                          </p>
                         </div>
 
                         {project.repository && (
                           <div>
-                            <Label className="text-sm font-medium">Repository</Label>
-                            <Link 
-                              href={project.repository} 
+                            <Label className="text-sm font-medium">
+                              Repository
+                            </Label>
+                            <Link
+                              href={project.repository}
                               target="_blank"
                               className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
                             >
-                              {project.repository} <ExternalLink className="w-3 h-3" />
+                              {project.repository}{" "}
+                              <ExternalLink className="w-3 h-3" />
                             </Link>
                           </div>
                         )}
 
                         {project.contract_address && (
                           <div>
-                            <Label className="text-sm font-medium">Smart Contract</Label>
-                            <Link 
-                              href={`https://etherscan.io/address/${project.contract_address}`} 
+                            <Label className="text-sm font-medium">
+                              Smart Contract
+                            </Label>
+                            <Link
+                              href={`https://etherscan.io/address/${project.contract_address}`}
                               target="_blank"
                               className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1 font-mono"
                             >
-                              {project.contract_address} <ExternalLink className="w-3 h-3" />
+                              {project.contract_address}{" "}
+                              <ExternalLink className="w-3 h-3" />
                             </Link>
                           </div>
                         )}
@@ -727,7 +936,9 @@ export default function ProjectPageClient({
                         <div>
                           <Label className="text-sm font-medium">Created</Label>
                           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                            {project.created_at ? format(new Date(project.created_at), "PPP") : "Unknown"}
+                            {project.created_at
+                              ? format(new Date(project.created_at), "PPP")
+                              : "Unknown"}
                           </p>
                         </div>
                       </CardContent>
@@ -741,10 +952,16 @@ export default function ProjectPageClient({
                       <CardContent className="space-y-4">
                         {techStack.length > 0 && (
                           <div>
-                            <Label className="text-sm font-medium">Technology Stack</Label>
+                            <Label className="text-sm font-medium">
+                              Technology Stack
+                            </Label>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {techStack.map((tech: string, index: number) => (
-                                <Badge key={index} variant="secondary" className="text-xs">
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
                                   {tech}
                                 </Badge>
                               ))}
@@ -754,25 +971,40 @@ export default function ProjectPageClient({
 
                         {teamMembers.length > 0 && (
                           <div>
-                            <Label className="text-sm font-medium">Team Members</Label>
+                            <Label className="text-sm font-medium">
+                              Team Members
+                            </Label>
                             <div className="space-y-1 mt-1">
-                              {teamMembers.map((member: string, index: number) => (
-                                <p key={index} className="text-sm text-neutral-600 dark:text-neutral-400">
-                                  @{member}
-                                </p>
-                              ))}
+                              {teamMembers.map(
+                                (member: string, index: number) => (
+                                  <p
+                                    key={index}
+                                    className="text-sm text-neutral-600 dark:text-neutral-400"
+                                  >
+                                    @{member}
+                                  </p>
+                                )
+                              )}
                             </div>
                           </div>
                         )}
 
                         <div>
-                          <Label className="text-sm font-medium">Project ID</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400 font-mono">{project.id}</p>
+                          <Label className="text-sm font-medium">
+                            Project ID
+                          </Label>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400 font-mono">
+                            {project.id}
+                          </p>
                         </div>
 
                         <div>
-                          <Label className="text-sm font-medium">Hackathon ID</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400 font-mono">{project.hackathon_id}</p>
+                          <Label className="text-sm font-medium">
+                            Hackathon ID
+                          </Label>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400 font-mono">
+                            {project.hackathon_id}
+                          </p>
                         </div>
                       </CardContent>
                     </Card>

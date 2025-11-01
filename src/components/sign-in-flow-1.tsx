@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState,useMemo, useRef, useEffect } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { cn } from "../lib/utils";
@@ -8,8 +8,8 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 
 import * as THREE from "three";
 import NavBar3 from "./NavBar/NavBar3";
-import { signIn } from "next-auth/react"
-import { Icon } from '@iconify/react'
+import { signIn } from "next-auth/react";
+import { Icon } from "@iconify/react";
 
 interface User {
   username?: string;
@@ -24,7 +24,7 @@ interface SessionData {
 
 interface Session {
   data?: SessionData | null;
-  status: 'authenticated' | 'unauthenticated' | 'loading';
+  status: "authenticated" | "unauthenticated" | "loading";
 }
 
 interface ApiError {
@@ -62,7 +62,7 @@ interface ShaderProps {
 interface SignInPageProps {
   className?: string;
 }
-      
+
 export const CanvasRevealEffect = ({
   animationSpeed = 10,
   opacities = [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1],
@@ -81,7 +81,9 @@ export const CanvasRevealEffect = ({
   reverse?: boolean; // This prop determines the direction
 }) => {
   return (
-    <div className={cn("h-full relative w-full", containerClassName)}> {/* Removed bg-white */}
+    <div className={cn("h-full relative w-full", containerClassName)}>
+      {" "}
+      {/* Removed bg-white */}
       <div className="h-full w-full">
         <DotMatrix
           colors={colors ?? [[0, 255, 255]]}
@@ -91,7 +93,7 @@ export const CanvasRevealEffect = ({
           }
           // Pass reverse state and speed via string flags in the empty shader prop
           shader={`
-            ${reverse ? 'u_reverse_active' : 'false'}_;
+            ${reverse ? "u_reverse_active" : "false"}_;
             animation_speed_factor_${animationSpeed.toFixed(1)}_;
           `}
           center={["x", "y"]}
@@ -100,13 +102,12 @@ export const CanvasRevealEffect = ({
       {showGradient && (
         // Adjust gradient colors if needed based on background (was bg-white, now likely uses containerClassName bg)
         // Example assuming a dark background like the SignInPage uses:
-         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
       )}
     </div>
   );
 };
 
-    
 interface DotMatrixProps {
   colors?: number[][];
   opacities?: number[];
@@ -272,7 +273,6 @@ const DotMatrix: React.FC<DotMatrixProps> = ({
   );
 };
 
-
 const ShaderMaterial = ({
   source,
   uniforms,
@@ -390,13 +390,22 @@ const Shader: React.FC<ShaderProps> = ({ source, uniforms, maxFps = 60 }) => {
   );
 };
 
-const AnimatedNavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const defaultTextColor = 'text-neutral-300';
-  const hoverTextColor = 'text-white';
-  const textSizeClass = 'text-sm';
+const AnimatedNavLink = ({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) => {
+  const defaultTextColor = "text-neutral-300";
+  const hoverTextColor = "text-white";
+  const textSizeClass = "text-sm";
 
   return (
-    <a href={href} className={`group relative inline-block overAVAX-hidden h-5 flex items-center ${textSizeClass}`}>
+    <a
+      href={href}
+      className={`group relative inline-block overMonad-hidden h-5 flex items-center ${textSizeClass}`}
+    >
       <div className="flex flex-col transition-transform duration-400 ease-out transform group-hover:-translate-y-1/2">
         <span className={defaultTextColor}>{children}</span>
         <span className={hoverTextColor}>{children}</span>
@@ -407,7 +416,7 @@ const AnimatedNavLink = ({ href, children }: { href: string; children: React.Rea
 
 function MiniNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
+  const [headerShapeClass, setHeaderShapeClass] = useState("rounded-full");
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleMenu = () => {
@@ -420,10 +429,10 @@ function MiniNavbar() {
     }
 
     if (isOpen) {
-      setHeaderShapeClass('rounded-xl');
+      setHeaderShapeClass("rounded-xl");
     } else {
       shapeTimeoutRef.current = setTimeout(() => {
-        setHeaderShapeClass('rounded-full');
+        setHeaderShapeClass("rounded-full");
       }, 300);
     }
 
@@ -436,18 +445,18 @@ function MiniNavbar() {
 
   const logoElement = (
     <div className="relative w-5 h-5 flex items-center justify-center">
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 top-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 left-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 right-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 bottom-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
- </div>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 top-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 left-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 right-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-neutral-200 bottom-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
+    </div>
   );
 
   const navLinksData = [
-    { label: 'Home', href: '/' },
-    { label: 'Projects', href: '/Browse' },
-    { label: 'Dashboard', href: '/homepage' },
-    { label: 'Create Project', href: '/create-project' }
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/Browse" },
+    { label: "Dashboard", href: "/homepage" },
+    { label: "Create Project", href: "/create-project" },
   ];
 
   const loginButtonElement = (
@@ -458,31 +467,32 @@ function MiniNavbar() {
 
   const signupButtonElement = (
     <div className="relative group w-full sm:w-auto">
-       <div className="absolute inset-0 -m-2 rounded-full
+      <div
+        className="absolute inset-0 -m-2 rounded-full
                      hidden sm:block
                      bg-neutral-100
                      opacity-40 filter blur-lg pointer-events-none
                      transition-all duration-300 ease-out
-                     group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"></div>
-       <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-black bg-gradient-to-br from-neutral-100 to-neutral-300 rounded-full hover:from-neutral-200 hover:to-neutral-400 transition-all duration-200 w-full sm:w-auto">
-         Signup
-       </button>
+                     group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
+      ></div>
+      <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-black bg-gradient-to-br from-neutral-100 to-neutral-300 rounded-full hover:from-neutral-200 hover:to-neutral-400 transition-all duration-200 w-full sm:w-auto">
+        Signup
+      </button>
     </div>
   );
 
   return (
-    <header className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-20
+    <header
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-20
                        flex flex-col items-center
                        pl-6 pr-6 py-3 backdrop-blur-sm
                        ${headerShapeClass}
                        border border-[#333] bg-[#1f1f1f57]
                        w-[calc(100%-2rem)] sm:w-auto
-                       transition-[border-radius] duration-0 ease-in-out`}>
-
+                       transition-[border-radius] duration-0 ease-in-out`}
+    >
       <div className="flex items-center justify-between w-full gap-x-6 sm:gap-x-8">
-        <div className="flex items-center">
-           {logoElement}
-        </div>
+        <div className="flex items-center">{logoElement}</div>
 
         <nav className="hidden sm:flex items-center space-x-4 sm:space-x-6 text-sm">
           {navLinksData.map((link) => (
@@ -497,20 +507,60 @@ function MiniNavbar() {
           {signupButtonElement}
         </div>
 
-        <button className="sm:hidden flex items-center justify-center w-8 h-8 text-neutral-300 focus:outline-none" onClick={toggleMenu} aria-label={isOpen ? 'Close Menu' : 'Open Menu'}>
+        <button
+          className="sm:hidden flex items-center justify-center w-8 h-8 text-neutral-300 focus:outline-none"
+          onClick={toggleMenu}
+          aria-label={isOpen ? "Close Menu" : "Open Menu"}
+        >
           {isOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
           ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
           )}
         </button>
       </div>
 
-      <div className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overAVAX-hidden
-                       ${isOpen ? 'max-h-[1000px] opacity-100 pt-4' : 'max-h-0 opacity-0 pt-0 pointer-events-none'}`}>
+      <div
+        className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overMonad-hidden
+                       ${
+                         isOpen
+                           ? "max-h-[1000px] opacity-100 pt-4"
+                           : "max-h-0 opacity-0 pt-0 pointer-events-none"
+                       }`}
+      >
         <nav className="flex flex-col items-center space-y-4 text-base w-full">
           {navLinksData.map((link) => (
-            <a key={link.href} href={link.href} className="text-neutral-300 hover:text-white transition-colors w-full text-center">
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-neutral-300 hover:text-white transition-colors w-full text-center"
+            >
               {link.label}
             </a>
           ))}
@@ -554,24 +604,24 @@ export const SignInPage = ({ className }: SignInPageProps) => {
       const newCode = [...code];
       newCode[index] = value;
       setCode(newCode);
-      
+
       // Focus next input if value is entered
       if (value && index < 5) {
         codeInputRefs.current[index + 1]?.focus();
       }
-      
+
       // Check if code is complete
       if (index === 5 && value) {
-        const isComplete = newCode.every(digit => digit.length === 1);
+        const isComplete = newCode.every((digit) => digit.length === 1);
         if (isComplete) {
           // First show the new reverse canvas
           setReverseCanvasVisible(true);
-          
+
           // Then hide the original canvas after a small delay
           setTimeout(() => {
             setInitialCanvasVisible(false);
           }, 50);
-          
+
           // Transition to success screen after animation
           setTimeout(() => {
             setStep("success");
@@ -581,7 +631,10 @@ export const SignInPage = ({ className }: SignInPageProps) => {
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
       codeInputRefs.current[index - 1]?.focus();
     }
@@ -596,7 +649,12 @@ export const SignInPage = ({ className }: SignInPageProps) => {
   };
 
   return (
-    <div className={cn("flex w-[100%] flex-col min-h-screen bg-black relative", className)}>
+    <div
+      className={cn(
+        "flex w-[100%] flex-col min-h-screen bg-black relative",
+        className
+      )}
+    >
       <div className="absolute z-50 inset-0 z-0">
         {/* Initial canvas (forward animation) */}
         {initialCanvasVisible && (
@@ -613,7 +671,7 @@ export const SignInPage = ({ className }: SignInPageProps) => {
             />
           </div>
         )}
-        
+
         {/* Reverse canvas (appears when code is complete) */}
         {reverseCanvasVisible && (
           <div className="absolute inset-0">
@@ -629,15 +687,15 @@ export const SignInPage = ({ className }: SignInPageProps) => {
             />
           </div>
         )}
-        
+
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,1)_0%,_transparent_100%)]" />
         <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-black to-transparent" />
       </div>
-      
+
       {/* Content Layer */}
       <div className="relative z-50 flex flex-col flex-1">
         {/* Top navigation */}
-        <NavBar3/>
+        <NavBar3 />
 
         {/* Main content container */}
         <div className="flex flex-1 flex-col lg:flex-row ">
@@ -646,7 +704,7 @@ export const SignInPage = ({ className }: SignInPageProps) => {
             <div className="w-full mt-[150px] max-w-sm">
               <AnimatePresence mode="wait">
                 {step === "email" ? (
-                  <motion.div 
+                  <motion.div
                     key="email-step"
                     initial={{ opacity: 0, x: -100 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -655,33 +713,71 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white ">Code. Contribute. Get Funded.</h1>
-                      <p className="text-lg text-white/70 font-light">Create your account or Login to collaborate on cutting-edge projects, join thriving ecosystems, and bring your ideas to life.</p>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white ">
+                        Code. Contribute. Get Funded.
+                      </h1>
+                      <p className="text-lg text-white/70 font-light">
+                        Create your account or Login to collaborate on
+                        cutting-edge projects, join thriving ecosystems, and
+                        bring your ideas to life.
+                      </p>
                     </div>
-                    
-                    
+
                     <div className="space-y-4">
-                      <button onClick={
-                                                  () => {
-                                                      signIn("github")
-                                                      
-                                                  }
-                                                  } className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full py-3 px-4 transition-colors">
-                        <span className="text-lg"><Icon icon="line-md:github" width="24" height="24" /></span>
+                      <button
+                        onClick={() => {
+                          signIn("github");
+                        }}
+                        className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full py-3 px-4 transition-colors"
+                      >
+                        <span className="text-lg">
+                          <Icon icon="line-md:github" width="24" height="24" />
+                        </span>
                         <span>Sign in with GitHub</span>
                       </button>
-                      
-                
-                      
-                      
                     </div>
-                    
+
                     <p className="text-xs text-white/40 pt-10">
-                      By signing up, you agree to the <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">MSA</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Product Terms</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Policies</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Notice</Link>, and <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Notice</Link>.
+                      By signing up, you agree to the{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        MSA
+                      </Link>
+                      ,{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Product Terms
+                      </Link>
+                      ,{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Policies
+                      </Link>
+                      ,{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Privacy Notice
+                      </Link>
+                      , and{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Cookie Notice
+                      </Link>
+                      .
                     </p>
                   </motion.div>
                 ) : step === "code" ? (
-                  <motion.div 
+                  <motion.div
                     key="code-step"
                     initial={{ opacity: 0, x: 100 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -690,10 +786,14 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">We sent you a code</h1>
-                      <p className="text-[1.25rem] text-white/50 font-light">Please enter it</p>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
+                        We sent you a code
+                      </h1>
+                      <p className="text-[1.25rem] text-white/50 font-light">
+                        Please enter it
+                      </p>
                     </div>
-                    
+
                     <div className="w-full">
                       <div className="relative rounded-full py-4 px-5 border border-white/10 bg-transparent">
                         <div className="flex items-center justify-center">
@@ -709,26 +809,32 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                                   pattern="[0-9]*"
                                   maxLength={1}
                                   value={digit}
-                                  onChange={e => handleCodeChange(i, e.target.value)}
-                                  onKeyDown={e => handleKeyDown(i, e)}
+                                  onChange={(e) =>
+                                    handleCodeChange(i, e.target.value)
+                                  }
+                                  onKeyDown={(e) => handleKeyDown(i, e)}
                                   className="w-8 text-center text-xl bg-transparent text-white border-none focus:outline-none focus:ring-0 appearance-none"
-                                  style={{ caretColor: 'transparent' }}
+                                  style={{ caretColor: "transparent" }}
                                 />
                                 {!digit && (
                                   <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
-                                    <span className="text-xl text-white">0</span>
+                                    <span className="text-xl text-white">
+                                      0
+                                    </span>
                                   </div>
                                 )}
                               </div>
-                              {i < 5 && <span className="text-white/20 text-xl">|</span>}
+                              {i < 5 && (
+                                <span className="text-white/20 text-xl">|</span>
+                              )}
                             </div>
                           ))}
                         </div>
                       </div>
                     </div>
-                    
+
                     <div>
-                      <motion.p 
+                      <motion.p
                         className="text-white/50 hover:text-white/70 transition-colors cursor-pointer text-sm"
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
@@ -736,9 +842,9 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                         Resend code
                       </motion.p>
                     </div>
-                    
+
                     <div className="flex w-full gap-3">
-                      <motion.button 
+                      <motion.button
                         onClick={handleBackClick}
                         className="rounded-full bg-white text-black font-medium px-8 py-3 hover:bg-white/90 transition-colors w-[30%]"
                         whileHover={{ scale: 1.02 }}
@@ -747,26 +853,61 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                       >
                         Back
                       </motion.button>
-                      <motion.button 
+                      <motion.button
                         className={`flex-1 rounded-full font-medium py-3 border transition-all duration-300 ${
-                          code.every(d => d !== "") 
-                          ? "bg-white text-black border-transparent hover:bg-white/90 cursor-pointer" 
-                          : "bg-[#111] text-white/50 border-white/10 cursor-not-allowed"
+                          code.every((d) => d !== "")
+                            ? "bg-white text-black border-transparent hover:bg-white/90 cursor-pointer"
+                            : "bg-[#111] text-white/50 border-white/10 cursor-not-allowed"
                         }`}
-                        disabled={!code.every(d => d !== "")}
+                        disabled={!code.every((d) => d !== "")}
                       >
                         Continue
                       </motion.button>
                     </div>
-                    
+
                     <div className="pt-16">
                       <p className="text-xs text-white/40">
-                        By signing up, you agree to the <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">MSA</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Product Terms</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Policies</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Notice</Link>, and <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Notice</Link>.
+                        By signing up, you agree to the{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          MSA
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Product Terms
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Policies
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Privacy Notice
+                        </Link>
+                        , and{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Cookie Notice
+                        </Link>
+                        .
                       </p>
                     </div>
                   </motion.div>
                 ) : (
-                  <motion.div 
+                  <motion.div
                     key="success-step"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -774,24 +915,37 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">You're in!</h1>
-                      <p className="text-[1.25rem] text-white/50 font-light">Welcome</p>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
+                        You're in!
+                      </h1>
+                      <p className="text-[1.25rem] text-white/50 font-light">
+                        Welcome
+                      </p>
                     </div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.5, delay: 0.5 }}
                       className="py-10"
                     >
                       <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-white to-white/70 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-black" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-8 w-8 text-black"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     </motion.div>
-                    
-                    <motion.button 
+
+                    <motion.button
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 1 }}
@@ -804,10 +958,8 @@ export const SignInPage = ({ className }: SignInPageProps) => {
               </AnimatePresence>
             </div>
           </div>
-          
         </div>
       </div>
     </div>
   );
 };
-

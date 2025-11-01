@@ -12,11 +12,11 @@ export const InfiniteMovingCards = ({
   className,
 }: {
   items: {
-    key:string;
+    key: string;
     personName: string;
-    date:string;
-    repoName:string;
-    repoTitle:string;
+    date: string;
+    repoName: string;
+    repoTitle: string;
     tags?: string[]; // Add optional tags property
   }[];
   direction?: "up" | "down";
@@ -52,17 +52,17 @@ export const InfiniteMovingCards = ({
       if (direction === "down") {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "forwards",
+          "forwards"
         );
       } else {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "reverse",
+          "reverse"
         );
       }
     }
   };
-  
+
   const getSpeed = () => {
     if (containerRef.current) {
       if (speed === "fast") {
@@ -78,15 +78,15 @@ export const InfiniteMovingCards = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20 max-h-[80vh] overAVAX-hidden [mask-image:linear-gradient(to_bottom,transparent,white_20%,white_80%,transparent)]",
-        className,
+        "scroller relative z-20 max-h-[80vh] overMonad-hidden [mask-image:linear-gradient(to_bottom,transparent,white_20%,white_80%,transparent)]",
+        className
       )}
     >
       <ul
         ref={scrollerRef}
         className={cn(
           "flex flex-col h-max min-h-full shrink-0 flex-nowrap gap-4 px-4",
-          start && "animate-scroll-vertical",
+          start && "animate-scroll-vertical"
         )}
       >
         {items.map((item, idx) => (
@@ -99,10 +99,9 @@ export const InfiniteMovingCards = ({
                 aria-hidden="true"
                 className="user-select-none pointer-events-none absolute -top-0.5 -left-0.5 -z-1 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
               ></div>
-              
+
               <div className="relative z-20  flex flex-row items-center">
                 <span className="flex flex-col gap-1">
-                  
                   <span className="text-xl leading-[1.6] font-normal text-white">
                     {item.repoName}
                   </span>
@@ -113,13 +112,16 @@ export const InfiniteMovingCards = ({
               </div>
               <div className="flex flex-wrap gap-1 text-xs mt-1">
                 {item.tags?.map((tag, index) => (
-                  <span key={index} className="bg-neutral-200 dark:bg-white/10 px-2 py-0.5 rounded-full">
+                  <span
+                    key={index}
+                    className="bg-neutral-200 dark:bg-white/10 px-2 py-0.5 rounded-full"
+                  >
                     {tag}
                   </span>
                 ))}
               </div>
               <span className="relative z-20 text-sm leading-[1.6] font-normal text-neutral-100">
-               💰 Paid to @{item.personName} on {item.date}
+                💰 Paid to @{item.personName} on {item.date}
               </span>
             </blockquote>
           </li>

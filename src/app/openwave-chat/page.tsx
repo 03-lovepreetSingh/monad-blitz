@@ -9,7 +9,7 @@ import {
   useMemo,
   useLayoutEffect,
 } from "react";
-import {Icon} from "@iconify/react"
+import { Icon } from "@iconify/react";
 import Example from "@/components/drop";
 
 import { signIn, useSession } from "next-auth/react";
@@ -21,11 +21,13 @@ import { Input } from "../../components/ui/input";
 import { cn } from "../../lib/utils";
 import Sidebar from "../../assets/components/chats/chatSidebar";
 import Topbar from "../../assets/components/chats/chatTopbar";
-import { useChatSidebarContext, type ChatMessage } from "../../assets/components/chats/chatSiderbarContext";
+import {
+  useChatSidebarContext,
+  type ChatMessage,
+} from "../../assets/components/chats/chatSiderbarContext";
 import { redirect } from "next/navigation";
 
-
-interface memoizedSession{
+interface memoizedSession {
   accessToken?: string;
   expires?: string;
   user?: {
@@ -34,7 +36,6 @@ interface memoizedSession{
     name?: string;
     image?: string;
   };
-
 }
 // Define message types for real-time messages
 interface RealTimeMessage {
@@ -68,8 +69,6 @@ interface SessionData {
   };
 }
 
-
-
 interface User {
   username?: string;
   email?: string;
@@ -100,7 +99,7 @@ export default function OptimizedChatPage() {
   const socketRef = useRef<Socket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-console.log("memo:", memoizedSession)
+  console.log("memo:", memoizedSession);
 
   // Check if mobile
   useEffect(() => {
@@ -125,7 +124,7 @@ console.log("memo:", memoizedSession)
     databaseMessages,
     setDatabaseMessages,
   } = useChatSidebarContext();
-console.log("selectedUser:", selectedUser)
+  console.log("selectedUser:", selectedUser);
 
   // State
   const [messages, setMessages] = useState<RealTimeMessage[]>([]);
@@ -135,7 +134,7 @@ console.log("selectedUser:", selectedUser)
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const [uploadFile,setUploadFile]=useState<boolean>()
+  const [uploadFile, setUploadFile] = useState<boolean>();
 
   const fetchMessages = async () => {
     try {
@@ -159,7 +158,7 @@ console.log("selectedUser:", selectedUser)
               databaseMessages[databaseMessages.length - 1]?.timestamp
             }`
       );
-      const data = await response.json() as { messages: ChatMessage[] };
+      const data = (await response.json()) as { messages: ChatMessage[] };
 
       if (data.messages && data.messages.length > 0) {
         setDatabaseMessages([
@@ -270,7 +269,10 @@ console.log("selectedUser:", selectedUser)
 
     // Message events
     socket.on("privateMessage", (msg: RealTimeMessage) => {
-      setMessages((prev: RealTimeMessage[]) => [...prev, { ...msg, pending: false }]);
+      setMessages((prev: RealTimeMessage[]) => [
+        ...prev,
+        { ...msg, pending: false },
+      ]);
     });
 
     // Error handling
@@ -337,7 +339,14 @@ console.log("selectedUser:", selectedUser)
     };
 
     // Add message optimistically
-    setMessages((prev: RealTimeMessage[]) => [...prev, { ...newMessage, to: selectedUser.id, from: memoizedSession?.user?.username as string }]);
+    setMessages((prev: RealTimeMessage[]) => [
+      ...prev,
+      {
+        ...newMessage,
+        to: selectedUser.id,
+        from: memoizedSession?.user?.username as string,
+      },
+    ]);
     setMessageInput("");
 
     // Send to server with callback
@@ -433,8 +442,6 @@ console.log("selectedUser:", selectedUser)
   if (!session) {
   }
 
-
-
   // Filter messages for current conversation
   const conversationMessages = messages.filter(
     (msg) =>
@@ -445,7 +452,7 @@ console.log("selectedUser:", selectedUser)
   );
 
   return (
-    <div className="flex h-screen overAVAX-hidden bg-neutral-100 dark:bg-neutral-900">
+    <div className="flex h-screen overMonad-hidden bg-neutral-100 dark:bg-neutral-900">
       <Sidebar />
       <div
         className={cn(
@@ -457,27 +464,29 @@ console.log("selectedUser:", selectedUser)
             : "ml-64 w-[calc(100%-16rem)]"
         )}
       >
-       {uploadFile && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-    <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-lg relative">
-      {/* Close button */}
-      <button
-        onClick={() => setUploadFile(false)}
-        className="absolute top-3 right-3 text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
-      >
-        ✖
-      </button>
+        {uploadFile && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 w-full max-w-lg relative">
+              {/* Close button */}
+              <button
+                onClick={() => setUploadFile(false)}
+                className="absolute top-3 right-3 text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
+              >
+                ✖
+              </button>
 
-      {/* Your Example component */}
-      <Example
-        contributorID={(memoizedSession?.user as User)?.username as string}
-        maintainerID={selectedUser?.Contributor_id as string}
-      />
-    </div>
-  </div>
-)}
+              {/* Your Example component */}
+              <Example
+                contributorID={
+                  (memoizedSession?.user as User)?.username as string
+                }
+                maintainerID={selectedUser?.Contributor_id as string}
+              />
+            </div>
+          </div>
+        )}
 
-        <main className="flex-1 flex flex-col overAVAX-hidden">
+        <main className="flex-1 flex flex-col overMonad-hidden">
           {/* Connection Status Bar */}
           {connectionStatus !== "connected" && (
             <div className="bg-yellow-100 dark:bg-yellow-900 border-b border-yellow-200 dark:border-yellow-800 px-2 sm:px-4 py-2">
@@ -518,7 +527,7 @@ console.log("selectedUser:", selectedUser)
           )}
 
           {/* Main Chat Content */}
-          <div className="flex-1 flex flex-col overAVAX-hidden">
+          <div className="flex-1 flex flex-col overMonad-hidden">
             {!selectedUser ? (
               <div className="flex flex-col items-center justify-center flex-1 px-4">
                 <div
@@ -554,7 +563,7 @@ console.log("selectedUser:", selectedUser)
                 )}
               </div>
             ) : (
-              <div className="flex-1 flex flex-col overAVAX-hidden">
+              <div className="flex-1 flex flex-col overMonad-hidden">
                 {/* Chat header */}
                 <div className="flex-shrink-0 p-2 xs:p-3 sm:p-4 border-b border-neutral-200 dark:border-neutral-900 bg-white dark:bg-neutral-950">
                   <div className="flex items-center gap-2 xs:gap-3">
@@ -591,7 +600,7 @@ console.log("selectedUser:", selectedUser)
                 {/* Messages Container - Scrollable */}
                 <div
                   ref={messagesContainerRef}
-                  className="flex-1 overAVAX-y-auto bg-neutral-50 dark:bg-neutral-900"
+                  className="flex-1 overMonad-y-auto bg-neutral-50 dark:bg-neutral-900"
                 >
                   <div className="p-2 xs:p-3 sm:p-4 space-y-2 xs:space-y-3 sm:space-y-4 min-h-full">
                     {/* Load More Messages Button/Loader */}
@@ -800,12 +809,18 @@ console.log("selectedUser:", selectedUser)
                       disabled={connectionStatus !== "connected"}
                       className="flex-1 text-xs xs:text-sm sm:text-base h-8 xs:h-9 sm:h-10"
                     />
-                    <div onClick={() => {setUploadFile(true)}} className="flex p-2 rounded  bg-neutral-500 hover:bg-neutral-600 my-auto items-center justify-center">
-                        <Icon icon="solar:file-send-broken" width="18" height="18" />
-                        <div className="bg-white p-2 rounded">
-
-
-                        </div>
+                    <div
+                      onClick={() => {
+                        setUploadFile(true);
+                      }}
+                      className="flex p-2 rounded  bg-neutral-500 hover:bg-neutral-600 my-auto items-center justify-center"
+                    >
+                      <Icon
+                        icon="solar:file-send-broken"
+                        width="18"
+                        height="18"
+                      />
+                      <div className="bg-white p-2 rounded"></div>
                     </div>
                     <Button
                       onClick={sendMessage}
@@ -815,7 +830,14 @@ console.log("selectedUser:", selectedUser)
                       className="bg-neutral-500 hover:bg-neutral-600 disabled:opacity-50 p-2 sm:px-4 text-xs xs:text-sm sm:text-base flex-shrink-0 h-8 xs:h-9 sm:h-10"
                     >
                       <span className="hidden xs:inline">Send</span>
-                      <div className="xs:hidden"><Icon icon="majesticons:send" width="24" height="24"  style={{ color: "#fffefe" }}  /></div>
+                      <div className="xs:hidden">
+                        <Icon
+                          icon="majesticons:send"
+                          width="24"
+                          height="24"
+                          style={{ color: "#fffefe" }}
+                        />
+                      </div>
                     </Button>
                   </div>
                   {selectedUser && !activeUsers.includes(selectedUser.id) && (

@@ -164,7 +164,7 @@ const NavBar3 = () => {
             direction={spinDirection}
           />
         </div>
-        <div className="overAVAX-hidden">
+        <div className="overMonad-hidden">
           <h1
             ref={textRef}
             className={`${

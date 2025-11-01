@@ -126,7 +126,7 @@ const InfiniteScroller = () => {
   };
 
   return (
-    <div className="absolute z-20 top-[60vh] left-0 w-full overAVAX-hidden">
+    <div className="absolute z-20 top-[60vh] left-0 w-full overMonad-hidden">
       <ul
         ref={scrollerRef}
         onMouseEnter={handleMouseEnter}
@@ -174,7 +174,7 @@ const ThemeChange = () => {
   };
 
   return (
-    <div className="bg-[#fffafa] w-full min-h-[169vh] overAVAX-x-hidden z-10 overAVAX-y-visible relative">
+    <div className="bg-[#fffafa] w-full min-h-[169vh] overMonad-x-hidden z-10 overMonad-y-visible relative">
       <div
         ref={(el) => (ballRefs.current[0] = el)}
         className={

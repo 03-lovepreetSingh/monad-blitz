@@ -1,13 +1,14 @@
 # README for Scripts
 
-This document provides an overview of the scripts available in the `nextjs-AVAX-subnet` project, detailing their purpose and usage.
+This document provides an overview of the scripts available in the `nextjs-Monad-subnet` project, detailing their purpose and usage.
 
 ## Scripts Overview
 
 ### 1. Subnet Scripts
 
 - **create_subnet.sh**
-  - **Purpose**: Automates the process of creating a new AVAX subnet.
+
+  - **Purpose**: Automates the process of creating a new Monad subnet.
   - **Usage**: Run this script to initialize a subnet with the specified configuration. Ensure that the necessary environment variables and configurations are set before execution.
 
 - **deploy_chain.sh**
@@ -17,8 +18,9 @@ This document provides an overview of the scripts available in the `nextjs-AVAX-
 ### 2. Fund and Transaction Scripts
 
 - **fund_pchain.ts**
-  - **Purpose**: Funds the P-Chain with AVAX to facilitate transaction fees and subnet creation.
-  - **Usage**: Run this TypeScript script to transfer AVAX to the P-Chain. Ensure that your wallet is connected and has sufficient AVAX balance.
+
+  - **Purpose**: Funds the P-Chain with Monad to facilitate transaction fees and subnet creation.
+  - **Usage**: Run this TypeScript script to transfer Monad to the P-Chain. Ensure that your wallet is connected and has sufficient Monad balance.
 
 - **sign_tx.ts**
   - **Purpose**: Handles the signing of transactions to ensure they are valid before being sent to the network.
@@ -27,13 +29,14 @@ This document provides an overview of the scripts available in the `nextjs-AVAX-
 ### 3. Infrastructure Scripts
 
 - **docker-compose.yml**
-  - **Purpose**: Defines the Docker configuration for running the AVAX node and associated services.
-  - **Usage**: Use Docker Compose to spin up the necessary services for the AVAX network. This file contains the configuration for the node and any dependencies.
+
+  - **Purpose**: Defines the Docker configuration for running the Monad node and associated services.
+  - **Usage**: Use Docker Compose to spin up the necessary services for the Monad network. This file contains the configuration for the node and any dependencies.
 
 - **main.tf**
-  - **Purpose**: Sets up the infrastructure needed for deploying the AVAX subnet and its components using Terraform.
+  - **Purpose**: Sets up the infrastructure needed for deploying the Monad subnet and its components using Terraform.
   - **Usage**: Run this Terraform configuration to provision the required resources for your subnet deployment.
 
 ## Conclusion
 
-These scripts are essential for managing the lifecycle of your AVAX subnet and its associated blockchains. Ensure to follow the usage instructions carefully to avoid any issues during execution. For further details on each script, refer to the specific script files in the project.
+These scripts are essential for managing the lifecycle of your Monad subnet and its associated blockchains. Ensure to follow the usage instructions carefully to avoid any issues during execution. For further details on each script, refer to the specific script files in the project.

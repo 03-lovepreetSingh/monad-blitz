@@ -92,7 +92,7 @@ export default function Sidebar() {
         style={{ transitionProperty: "width, padding" }}
       >
         <div className="flex flex-col h-full justify-between">
-          <div className="flex-1 overAVAX-y-auto">
+          <div className="flex-1 overMonad-y-auto">
             <div className="mb-4">
               {isShrunk ? (
                 <>
@@ -184,7 +184,7 @@ export default function Sidebar() {
                         </Canvas>
                       </div>
                     </Suspense>
-                    <div className="my-auto overAVAX-hidden">
+                    <div className="my-auto overMonad-hidden">
                       <h1
                         ref={textRef}
                         className={`dark:text-white text-black text-2xl text-center  `}
@@ -314,9 +314,7 @@ export default function Sidebar() {
                         width="24"
                         height="24"
                       />
-                      <div className="my-auto">
-                        {!isShrunk && "Hacks"}
-                      </div>
+                      <div className="my-auto">{!isShrunk && "Hacks"}</div>
                     </div>
                   </div>
                 </Link>

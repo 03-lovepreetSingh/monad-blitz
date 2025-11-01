@@ -24,7 +24,6 @@ import { IconCommand } from "@tabler/icons-react";
 import { IconCaretLeftFilled } from "@tabler/icons-react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
 
-
 export const MacbookScroll = ({
   src,
   showGradient,
@@ -53,12 +52,12 @@ export const MacbookScroll = ({
   const scaleX = useTransform(
     scrollYProgress,
     [0, 0.3],
-    [1.2, isMobile ? 1 : 1.5],
+    [1.2, isMobile ? 1 : 1.5]
   );
   const scaleY = useTransform(
     scrollYProgress,
     [0, 0.3],
-    [0.6, isMobile ? 1 : 1.5],
+    [0.6, isMobile ? 1 : 1.5]
   );
   const translate = useTransform(scrollYProgress, [0, 1], [0, 1500]);
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
@@ -92,19 +91,19 @@ export const MacbookScroll = ({
         translate={translate}
       />
       {/* Base area */}
-      <div className="relative -z-10 h-[22rem] w-[32rem] overAVAX-hidden rounded-2xl bg-neutral-200 dark:bg-[#272729]">
+      <div className="relative -z-10 h-[22rem] w-[32rem] overMonad-hidden rounded-2xl bg-neutral-200 dark:bg-[#272729]">
         {/* above keyboard bar */}
         <div className="relative h-10 w-full">
           <div className="absolute inset-x-0 mx-auto h-4 w-[80%] bg-[#050505]" />
         </div>
         <div className="relative flex">
-          <div className="mx-auto h-full w-[10%] overAVAX-hidden">
+          <div className="mx-auto h-full w-[10%] overMonad-hidden">
             <SpeakerGrid />
           </div>
           <div className="mx-auto h-full w-[80%]">
             <Keypad />
           </div>
-          <div className="mx-auto h-full w-[10%] overAVAX-hidden">
+          <div className="mx-auto h-full w-[10%] overMonad-hidden">
             <SpeakerGrid />
           </div>
         </div>
@@ -559,13 +558,13 @@ export const KBtn = ({
     <div
       className={cn(
         "[transform:translateZ(0)] rounded-[4px] p-[0.5px] [will-change:transform]",
-        backlit && "bg-white/[0.2] shadow-xl shadow-white",
+        backlit && "bg-white/[0.2] shadow-xl shadow-white"
       )}
     >
       <div
         className={cn(
           "flex h-6 w-6 items-center justify-center rounded-[3.5px] bg-[#0A090D]",
-          className,
+          className
         )}
         style={{
           boxShadow:
@@ -576,7 +575,7 @@ export const KBtn = ({
           className={cn(
             "flex w-full flex-col items-center justify-center text-[5px] text-neutral-200",
             childrenClassName,
-            backlit && "text-white",
+            backlit && "text-white"
           )}
         >
           {children}

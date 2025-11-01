@@ -30,16 +30,28 @@ const CloseIcon = () => (
     stroke="currentColor"
     className="w-5 h-5"
   >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
   </svg>
 );
 
 // --- Sub-component for a single search result ---
-const ProjectResultItem = ({ repo, onClose }: { repo: any; onClose: () => void }) => {
+const ProjectResultItem = ({
+  repo,
+  onClose,
+}: {
+  repo: any;
+  onClose: () => void;
+}) => {
   // Defensive parsing for stats
   const stars = parseInt(repo.stars, 10) || 0;
   const forks = parseInt(repo.forks, 10) || 0;
-  const contributors = Array.isArray(repo.contributors?.collabs) ? repo.contributors.collabs.length : 0;
+  const contributors = Array.isArray(repo.contributors?.collabs)
+    ? repo.contributors.collabs.length
+    : 0;
 
   if (!repo.projectName) return null;
 
@@ -63,11 +75,26 @@ const ProjectResultItem = ({ repo, onClose }: { repo: any; onClose: () => void }
             <div className="flex items-center gap-4 mt-3 text-xs text-neutral-500 dark:text-neutral-400">
               <span className="flex items-center gap-1">⭐ {stars}</span>
               <span className="flex items-center gap-1">
-                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3"><path fillRule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"></path></svg>
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="w-3 h-3"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"
+                  ></path>
+                </svg>
                 {forks}
               </span>
               <span className="flex items-center gap-1">
-                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3"><path d="M10.5 5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z M8 8.25a5.485 5.485 0 00-4.083 1.823.75.75 0 00.916 1.204A4 4 0 018 9.75a4 4 0 013.167 1.527.75.75 0 00.916-1.204A5.485 5.485 0 008 8.25z"></path></svg>
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="w-3 h-3"
+                >
+                  <path d="M10.5 5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z M8 8.25a5.485 5.485 0 00-4.083 1.823.75.75 0 00.916 1.204A4 4 0 018 9.75a4 4 0 013.167 1.527.75.75 0 00.916-1.204A5.485 5.485 0 008 8.25z"></path>
+                </svg>
                 {contributors}
               </span>
             </div>
@@ -92,7 +119,11 @@ const ProjectResultItem = ({ repo, onClose }: { repo: any; onClose: () => void }
               stroke="currentColor"
               className="w-5 h-5 text-neutral-400 transition-opacity duration-200 opacity-0 group-hover:opacity-100"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
             </svg>
           </div>
         </div>
@@ -100,7 +131,6 @@ const ProjectResultItem = ({ repo, onClose }: { repo: any; onClose: () => void }
     </Link>
   );
 };
-
 
 // --- Main Modal Component ---
 export default function SearchModal() {
@@ -142,9 +172,14 @@ export default function SearchModal() {
       setFilteredRepos([]); // Show nothing initially, prompt user to type
     } else {
       setFilteredRepos(
-        repoData.filter((repo: any) =>
-          (repo.projectName && repo.projectName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (repo.shortdes && repo.shortdes.toLowerCase().includes(searchTerm.toLowerCase()))
+        repoData.filter(
+          (repo: any) =>
+            (repo.projectName &&
+              repo.projectName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())) ||
+            (repo.shortdes &&
+              repo.shortdes.toLowerCase().includes(searchTerm.toLowerCase()))
         )
       );
     }
@@ -153,12 +188,12 @@ export default function SearchModal() {
   // Effect for keyboard shortcuts (e.g., closing with Escape key)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         closeSearchModal();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [closeSearchModal]);
 
   if (!isSearchOpen) return null;
@@ -186,30 +221,36 @@ export default function SearchModal() {
             autoFocus
           />
           <div className="flex-shrink-0 p-3  text-xs text-neutral-400 dark:text-neutral-600 flex justify-end items-center gap-2">
-           Close <kbd className="px-2 py-1 text-xs font-semibold text-neutral-500 bg-neutral-100 border border-neutral-200 rounded-md dark:bg-neutral-900 dark:text-neutral-400 dark:border-neutral-700">Esc</kbd>
+            Close{" "}
+            <kbd className="px-2 py-1 text-xs font-semibold text-neutral-500 bg-neutral-100 border border-neutral-200 rounded-md dark:bg-neutral-900 dark:text-neutral-400 dark:border-neutral-700">
+              Esc
+            </kbd>
           </div>
         </div>
 
         {/* Results Area */}
-        <div className="flex-grow overAVAX-y-auto  scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-700">
-          
-          
-          {!isLoading && filteredRepos.length === 0 && searchTerm.trim() !== "" && (
-            <p className="text-center my-auto text-neutral-400 dark:text-neutral-500 py-10">
-              No projects found for "{searchTerm}".
-            </p>
-          )}
+        <div className="flex-grow overMonad-y-auto  scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-neutral-700">
+          {!isLoading &&
+            filteredRepos.length === 0 &&
+            searchTerm.trim() !== "" && (
+              <p className="text-center my-auto text-neutral-400 dark:text-neutral-500 py-10">
+                No projects found for "{searchTerm}".
+              </p>
+            )}
           {!isLoading && filteredRepos.length > 0 && (
-             <div className="space-y-1">
+            <div className="space-y-1">
               {filteredRepos.map((repo: any) => (
-                <ProjectResultItem key={repo.projectName} repo={repo} onClose={closeSearchModal} />
+                <ProjectResultItem
+                  key={repo.projectName}
+                  repo={repo}
+                  onClose={closeSearchModal}
+                />
               ))}
-             </div>
+            </div>
           )}
         </div>
 
         {/* Footer */}
-        
       </div>
     </div>
   );

@@ -74,20 +74,24 @@ export default function Sidebar() {
 
   // Fix: Ensure uniqueFilteredUsers is always an array and has correct type
   // @ts-expect-error - filteredUsers is not typed correctly
-  const uniqueFilteredUsers: ContributorRequests[] = Array.isArray(filteredUsers)
-  // @ts-expect-error - filteredUsers is not typed correctly
-    ? filteredUsers.reduce((unique: ContributorRequests[], user: ContributorRequests) => {
-        if (!unique.some((u) => u?.Contributor_id === user?.Contributor_id)) {
-          unique.push(user);
-        }
-        return unique;
-      }, [])
+  const uniqueFilteredUsers: ContributorRequests[] = Array.isArray(
+    filteredUsers
+  )
+    ? // @ts-expect-error - filteredUsers is not typed correctly
+      filteredUsers.reduce(
+        (unique: ContributorRequests[], user: ContributorRequests) => {
+          if (!unique.some((u) => u?.Contributor_id === user?.Contributor_id)) {
+            unique.push(user);
+          }
+          return unique;
+        },
+        []
+      )
     : [];
 
   // Refresh users when the component mounts
   useEffect(() => {
     refreshUsers();
-     
   }, []);
 
   return (
@@ -112,10 +116,7 @@ export default function Sidebar() {
                   alignItems: "center",
                 }}
               >
-                <img
-                  src="/NeowareLogo2.png"
-                  alt="Loading logo..."
-                />
+                <img src="/NeowareLogo2.png" alt="Loading logo..." />
               </div>
             }
           >
@@ -133,7 +134,7 @@ export default function Sidebar() {
               </Canvas>
             </div>
           </Suspense>
-          <div className="my-auto overAVAX-hidden max-sm:hidden">
+          <div className="my-auto overMonad-hidden max-sm:hidden">
             <h1
               ref={textRef}
               className="dark:text-white text-black text-2xl text-center max-md:text-xl max-sm:text-lg"

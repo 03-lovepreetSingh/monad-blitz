@@ -230,7 +230,7 @@ export default function InfiniteCarousel() {
             currentPosition += scrollSpeed; // scrollSpeed is negative
           }
         }
-        
+
         el.scrollLeft = currentPosition;
         animationFrameIds[index] = requestAnimationFrame(scroll);
       };
@@ -239,24 +239,24 @@ export default function InfiniteCarousel() {
     });
 
     return () => {
-      animationFrameIds.forEach(id => cancelAnimationFrame(id));
+      animationFrameIds.forEach((id) => cancelAnimationFrame(id));
     };
   }, []);
 
-  const renderRow = (items: typeof items1, ref: React.RefObject<HTMLDivElement>) => (
-    <div ref={ref} className="   relative w-full overAVAX-hidden py-2">
+  const renderRow = (
+    items: typeof items1,
+    ref: React.RefObject<HTMLDivElement>
+  ) => (
+    <div ref={ref} className="   relative w-full overMonad-hidden py-2">
       <div className="flex gap-3 whitespace-nowrap">
         {/* Duplicate items for seamless loop */}
         {[...items, ...items].map((logo, index) => (
-          <div key={index} className="flex items-center gap-3 rounded-full p-2 bg-neutral-900 shrink-0">
-            <Icon
-              icon={logo.icon}
-              width={20}
-              height={20}
-            />
-            <div className="text-[12px] text-white">
-              {logo.name}
-            </div>
+          <div
+            key={index}
+            className="flex items-center gap-3 rounded-full p-2 bg-neutral-900 shrink-0"
+          >
+            <Icon icon={logo.icon} width={20} height={20} />
+            <div className="text-[12px] text-white">{logo.name}</div>
           </div>
         ))}
       </div>
@@ -264,7 +264,7 @@ export default function InfiniteCarousel() {
   );
 
   return (
-    <div className="w-full [mask-image:linear-gradient(to_right,transparent,black_25%,black_75%,transparent)]  overAVAX-hidden space-y-4">
+    <div className="w-full [mask-image:linear-gradient(to_right,transparent,black_25%,black_75%,transparent)]  overMonad-hidden space-y-4">
       {renderRow(items1, scrollRef1 as React.RefObject<HTMLDivElement>)}
       {renderRow(items2, scrollRef2 as React.RefObject<HTMLDivElement>)}
       {renderRow(items3, scrollRef3 as React.RefObject<HTMLDivElement>)}

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "chain": {
-    "name": "AVAX Subnet",
+    "name": "Monad Subnet",
     "id": 1,
     "vm": "SubnetEVM",
     "genesis": {
