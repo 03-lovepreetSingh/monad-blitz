@@ -2,26 +2,26 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_vpc" "AVAX_vpc" {
+resource "aws_vpc" "Monad_vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "AVAX-vpc"
+    Name = "Monad-vpc"
   }
 }
 
-resource "aws_subnet" "AVAX_subnet" {
-  vpc_id            = aws_vpc.AVAX_vpc.id
+resource "aws_subnet" "Monad_subnet" {
+  vpc_id            = aws_vpc.Monad_vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = "AVAX-subnet"
+    Name = "Monad-subnet"
   }
 }
 
-resource "aws_security_group" "AVAX_sg" {
-  vpc_id = aws_vpc.AVAX_vpc.id
+resource "aws_security_group" "Monad_sg" {
+  vpc_id = aws_vpc.Monad_vpc.id
 
   ingress {
     from_port   = 9650
@@ -45,17 +45,17 @@ resource "aws_security_group" "AVAX_sg" {
   }
 
   tags = {
-    Name = "AVAX-sg"
+    Name = "Monad-sg"
   }
 }
 
-resource "aws_instance" "AVAX_validator" {
+resource "aws_instance" "Monad_validator" {
   ami           = "ami-0c55b159cbfafe1f0" # Replace with a valid AMI ID
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.AVAX_subnet.id
-  security_groups = [aws_security_group.AVAX_sg.name]
+  subnet_id     = aws_subnet.Monad_subnet.id
+  security_groups = [aws_security_group.Monad_sg.name]
 
   tags = {
-    Name = "AVAX-validator"
+    Name = "Monad-validator"
   }
 }

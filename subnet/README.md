@@ -1,27 +1,27 @@
-# Next.js AVAX Subnet Integration
+# Next.js Monad Subnet Integration
 
-This project demonstrates how to create and manage an AVAX subnet using a Next.js application. It provides a user-friendly interface for interacting with the AVAX network, allowing users to create subnets and blockchains seamlessly.
+This project demonstrates how to create and manage an Monad subnet using a Next.js application. It provides a user-friendly interface for interacting with the Monad network, allowing users to create subnets and blockchains seamlessly.
 
 ## Project Structure
 
 The project is organized as follows:
 
 ```
-nextjs-AVAX-subnet
+nextjs-Monad-subnet
 ├── src
 │   ├── app
 │   │   ├── layout.tsx          # Layout component for the application
 │   │   ├── page.tsx            # Main entry point for the application
 │   │   └── api
-│   │       └── AVAX
+│   │       └── Monad
 │   │           ├── createSubnet.route.ts  # API route for creating a subnet
 │   │           └── createChain.route.ts   # API route for creating a blockchain
 │   ├── components
 │   │   ├── WalletConnect.tsx   # Component for wallet connection
 │   │   └── SubnetDashboard.tsx  # Component for displaying subnet information
 │   ├── lib
-│   │   ├── AVAX
-│   │   │   ├── client.ts        # AVAX client initialization
+│   │   ├── Monad
+│   │   │   ├── client.ts        # Monad client initialization
 │   │   │   └── txHelpers.ts     # Transaction helper functions
 │   │   └── hooks
 │   │       └── useWallet.ts     # Custom hook for wallet management
@@ -42,12 +42,12 @@ nextjs-AVAX-subnet
 │   └── sign_tx.ts                # Script to sign transactions
 ├── infra
 │   ├── docker
-│   │   └── docker-compose.yml     # Docker configuration for AVAX node
+│   │   └── docker-compose.yml     # Docker configuration for Monad node
 │   └── terraform
 │       └── main.tf                # Terraform configuration for infrastructure
 ├── tools
 │   ├── go
-│   │   └── example_client.go      # Example client for AVAX network
+│   │   └── example_client.go      # Example client for Monad network
 │   └── README_SCRIPTS.md          # Documentation for available scripts
 ├── public
 ├── package.json                   # npm configuration file
@@ -62,14 +62,15 @@ nextjs-AVAX-subnet
 
 - Node.js (version 14 or higher)
 - npm or yarn
-- AVAX node (local or remote)
+- Monad node (local or remote)
 
 ### Installation
 
 1. Clone the repository:
+
    ```
    git clone <repository-url>
-   cd nextjs-AVAX-subnet
+   cd nextjs-Monad-subnet
    ```
 
 2. Install dependencies:
@@ -80,14 +81,16 @@ nextjs-AVAX-subnet
 ### Running the Application
 
 To start the development server, run:
+
 ```
 npm run dev
 ```
+
 The application will be available at `http://localhost:3000`.
 
 ### Creating a Subnet
 
-To create a new AVAX subnet, navigate to the appropriate API route in your application. The backend will handle the subnet creation using the AVAX SDK.
+To create a new Monad subnet, navigate to the appropriate API route in your application. The backend will handle the subnet creation using the Monad SDK.
 
 ### Creating a Blockchain
 
@@ -99,7 +102,7 @@ You can test the application by connecting your wallet and interacting with the 
 
 ## Resources
 
-- [AVAX Documentation](https://docs.AVAX.network/)
+- [Monad Documentation](https://docs.Monad.network/)
 - [Next.js Documentation](https://nextjs.org/docs)
 
 ## Contributing

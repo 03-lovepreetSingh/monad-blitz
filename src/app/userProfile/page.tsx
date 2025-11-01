@@ -4,12 +4,26 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import {
+  useAccount,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from "wagmi";
 import { Octokit } from "@octokit/rest";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle, User, MapPin, CalendarDays, LinkIcon, Star, GitPullRequest, Briefcase } from "lucide-react";
+import {
+  CheckCircle,
+  AlertCircle,
+  User,
+  MapPin,
+  CalendarDays,
+  LinkIcon,
+  Star,
+  GitPullRequest,
+  Briefcase,
+} from "lucide-react";
 import Sidebar from "@/assets/components/sidebar";
 import Topbar from "@/assets/components/topbar";
 import { useSidebarContext } from "@/assets/components/SidebarContext";
@@ -17,8 +31,17 @@ import ProjectsTab from "./components/ProjectsTab";
 import { userProfileAbi, userProfileContract } from "./abi";
 import { getUserCerts } from "@/actions/user-certs";
 
-type TabName = "Overview" | "Pull Requests" | "Achievements" | "Activity" | "Projects";
-type TabNameExtended = "Overview" | "Pull Requests" | "Achievements" | "Projects";
+type TabName =
+  | "Overview"
+  | "Pull Requests"
+  | "Achievements"
+  | "Activity"
+  | "Projects";
+type TabNameExtended =
+  | "Overview"
+  | "Pull Requests"
+  | "Achievements"
+  | "Projects";
 
 interface GitHubContribution {
   date: string;
@@ -77,30 +100,33 @@ const achievements: Achievement[] = [
   {
     image: "first-fixer",
     name: "First Fixer",
-    description: "You've squashed your first bug! This badge marks the beginning of your contribution journey.",
+    description:
+      "You've squashed your first bug! This badge marks the beginning of your contribution journey.",
     attributes: [
       { trait_type: "Role", value: "Contributor" },
-      { trait_type: "Milestone", value: 1 }
-    ]
+      { trait_type: "Milestone", value: 1 },
+    ],
   },
   {
     image: "bug-buster",
     name: "Bug Buster",
-    description: "You're becoming unstoppable — five fixes and counting. This badge celebrates your persistence.",
+    description:
+      "You're becoming unstoppable — five fixes and counting. This badge celebrates your persistence.",
     attributes: [
       { trait_type: "Role", value: "Contributor" },
-      { trait_type: "Milestone", value: 5 }
-    ]
+      { trait_type: "Milestone", value: 5 },
+    ],
   },
   {
     image: "code-champion",
     name: "Code Champion",
-    description: "Ten issues down! You've earned your place among the top contributors.",
+    description:
+      "Ten issues down! You've earned your place among the top contributors.",
     attributes: [
       { trait_type: "Role", value: "Contributor" },
-      { trait_type: "Milestone", value: 10 }
-    ]
-  }
+      { trait_type: "Milestone", value: 10 },
+    ],
+  },
 ];
 
 function getNFTBadge(role: string, milestone: number): NFTBadge | null {
@@ -110,19 +136,22 @@ function getNFTBadge(role: string, milestone: number): NFTBadge | null {
         case 1:
           return {
             name: "First Fixer",
-            description: "You've squashed your first bug! This badge marks the beginning of your contribution journey.",
+            description:
+              "You've squashed your first bug! This badge marks the beginning of your contribution journey.",
             json: "",
           };
         case 5:
           return {
             name: "Bug Buster",
-            description: "You're becoming unstoppable — five fixes and counting. This badge celebrates your persistence.",
+            description:
+              "You're becoming unstoppable — five fixes and counting. This badge celebrates your persistence.",
             json: "",
           };
         case 10:
           return {
             name: "Code Champion",
-            description: "Ten issues down! You've earned your place among the top contributors.",
+            description:
+              "Ten issues down! You've earned your place among the top contributors.",
             json: "",
           };
         default:
@@ -133,16 +162,19 @@ function getNFTBadge(role: string, milestone: number): NFTBadge | null {
   }
 }
 
-
-
 export default function UserProfilePage() {
   const { isShrunk } = useSidebarContext();
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
-  const [activeExtendedTab, setActiveExtendedTab] = useState<TabNameExtended>("Overview");
+  const [activeExtendedTab, setActiveExtendedTab] =
+    useState<TabNameExtended>("Overview");
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [contributionData, setContributionData] = useState<GitHubContribution[]>([]);
-  const [TotalEarnings, updateEarnings] = useState<number | undefined>(undefined);
+  const [contributionData, setContributionData] = useState<
+    GitHubContribution[]
+  >([]);
+  const [TotalEarnings, updateEarnings] = useState<number | undefined>(
+    undefined
+  );
   const [rewardAmount, setRewardAmount] = useState<number>(0);
   const [rewardData, setRewardData] = useState<any[]>([]);
   const [uniqueRewardDays, setUniqueRewardDays] = useState(0);
@@ -165,8 +197,16 @@ export default function UserProfilePage() {
   const { data: session } = useSession();
   const { address, isConnected } = useAccount();
 
-  const { writeContract: writeContractForward, isPending: isForwarding, error: forwardError } = useWriteContract();
-  const { isLoading: isConfirmingForward, isSuccess: isForwardConfirmed, error: confirmationError } = useWaitForTransactionReceipt({ hash: forwardHash as `0x${string}` });
+  const {
+    writeContract: writeContractForward,
+    isPending: isForwarding,
+    error: forwardError,
+  } = useWriteContract();
+  const {
+    isLoading: isConfirmingForward,
+    isSuccess: isForwardConfirmed,
+    error: confirmationError,
+  } = useWaitForTransactionReceipt({ hash: forwardHash as `0x${string}` });
 
   const achieve = async (ach: string) => {
     if (!address) return;
@@ -194,7 +234,9 @@ export default function UserProfilePage() {
 
   useEffect(() => {
     if (isForwarding) {
-      setAlertMessage("Please confirm the NFT minting transaction in your wallet...");
+      setAlertMessage(
+        "Please confirm the NFT minting transaction in your wallet..."
+      );
     } else if (isConfirmingForward) {
       setAlertMessage("Waiting for transaction confirmation...");
     } else if (isForwardConfirmed) {
@@ -203,9 +245,17 @@ export default function UserProfilePage() {
     } else if (forwardError) {
       setAlertMessage(`Transaction failed: ${forwardError.message}`);
     } else if (confirmationError) {
-      setAlertMessage(`Transaction confirmation failed: ${confirmationError.message}`);
+      setAlertMessage(
+        `Transaction confirmation failed: ${confirmationError.message}`
+      );
     }
-  }, [isForwarding, isConfirmingForward, isForwardConfirmed, forwardError, confirmationError]);
+  }, [
+    isForwarding,
+    isConfirmingForward,
+    isForwardConfirmed,
+    forwardError,
+    confirmationError,
+  ]);
 
   useEffect(() => {
     const fetchRewards = async () => {
@@ -520,7 +570,6 @@ export default function UserProfilePage() {
   }, [currentUser]);
 
   const renderTabContent = () => {
-
     switch (activeExtendedTab) {
       case "Overview":
         return (
@@ -542,7 +591,7 @@ export default function UserProfilePage() {
                       Worked {uniqueRewardDays} days in the last year
                     </p>
                   </div>
-                  <div className="overAVAX-x-auto w-full">
+                  <div className="overMonad-x-auto w-full">
                     {/* Component placeholder - you'll need to implement this */}
                     <div className="h-64 bg-neutral-100 dark:bg-neutral-700 rounded flex items-center justify-center">
                       <p className="text-neutral-500 dark:text-neutral-400">
@@ -616,7 +665,7 @@ export default function UserProfilePage() {
             <h2 className="text-xl font-semibold mb-4 text-neutral-900 dark:text-white">
               Completed Pull Requests
             </h2>
-            <div className="overAVAX-x-auto">
+            <div className="overMonad-x-auto">
               <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
                 <thead className="bg-neutral-50 dark:bg-neutral-700">
                   <tr>
@@ -781,7 +830,7 @@ export default function UserProfilePage() {
         return (
           <div className="mt-4 sm:mt-6">
             <div className="bg-white dark:bg-neutral-800 p-4 sm:p-6 rounded-lg shadow">
-                <ProjectsTab userIdProp={userFromQuery || users[0]?._id} />
+              <ProjectsTab userIdProp={userFromQuery || users[0]?._id} />
             </div>
           </div>
         );
@@ -956,7 +1005,7 @@ export default function UserProfilePage() {
                     {
                       icon: (
                         <img
-                          src="https://build.AVAX.network/favicon.ico"
+                          src="https://cdn.prod.website-files.com/667c57e6f9254a4b6d914440/67b135627be8437b3cda15ae_Monad%20Logomark.svg"
                           width={40}
                           height={40}
                           className="w-6 h-6 "
@@ -1018,7 +1067,12 @@ export default function UserProfilePage() {
                       aria-label="Tabs"
                     >
                       {(
-                        ["Overview", "Pull Requests", "Achievements", "Projects"] as TabNameExtended[]
+                        [
+                          "Overview",
+                          "Pull Requests",
+                          "Achievements",
+                          "Projects",
+                        ] as TabNameExtended[]
                       ).map((tab) => (
                         <button
                           key={tab}
@@ -1029,9 +1083,12 @@ export default function UserProfilePage() {
                                 try {
                                   setLoadingProjects(true);
                                   const userId = userFromQuery || users[0]?._id;
-                                  const res = await fetch(`/api/user-projects?userId=${userId}`);
+                                  const res = await fetch(
+                                    `/api/user-projects?userId=${userId}`
+                                  );
                                   const json = await res.json();
-                                  if (json.success) setUserProjects(json.projects || []);
+                                  if (json.success)
+                                    setUserProjects(json.projects || []);
                                   else setUserProjects([]);
                                 } catch (err) {
                                   console.error(err);

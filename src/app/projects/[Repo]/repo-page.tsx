@@ -2,13 +2,7 @@
 
 import Sidebar from "../../../assets/components/sidebar";
 import Topbar from "../../../assets/components/topbar";
-import {
-  useState,
-  useEffect,
-  createContext,
-  useMemo,
-  useRef,
-} from "react";
+import { useState, useEffect, createContext, useMemo, useRef } from "react";
 import { Octokit } from "octokit";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from "react-markdown";
@@ -17,10 +11,7 @@ import { useSidebarContext } from "../../../assets/components/SidebarContext";
 import { Suspense } from "react";
 import { Icon } from "@iconify/react";
 import ContributorApplicationForm from "./contributor-form";
-import {
-  useWriteContract,
-  useWaitForTransactionReceipt,
-} from "wagmi";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseEther } from "viem";
 
 // Context for modal
@@ -34,9 +25,24 @@ const abi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: "address", name: "sender", type: "address" },
-      { indexed: true, internalType: "address", name: "recipient", type: "address" },
-      { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
     name: "Transferred",
     type: "event",
@@ -172,11 +178,12 @@ export default function RepoPageClient({
   useEffect(() => {
     let cancelled = false;
     async function fetchGitHubData() {
-      if (!session?.user?.username || !octokit || fetchedDetailsRef.current) return;
+      if (!session?.user?.username || !octokit || fetchedDetailsRef.current)
+        return;
 
       try {
         await octokit.request("GET /user");
-        
+
         const headers = { "X-GitHub-Api-Version": "2022-11-28" };
         const repoOwner =
           repoData?.owner?.login ||
@@ -194,7 +201,11 @@ export default function RepoPageClient({
           ] = await Promise.all([
             octokit.request(
               `GET /repos/${repoOwner}/${repoData.project_repository}/contributors`,
-              { owner: repoOwner, repo: repoData.project_repository, per_page: 100 }
+              {
+                owner: repoOwner,
+                repo: repoData.project_repository,
+                per_page: 100,
+              }
             ),
             octokit.request(
               `GET /repos/${repoOwner}/${repoData.project_repository}/languages`,
@@ -202,7 +213,11 @@ export default function RepoPageClient({
             ),
             octokit.request(
               `GET /repos/${repoOwner}/${repoData.project_repository}/commits`,
-              { owner: repoOwner, repo: repoData.project_repository, per_page: 10 }
+              {
+                owner: repoOwner,
+                repo: repoData.project_repository,
+                per_page: 10,
+              }
             ),
             octokit.request(
               `GET /repos/${repoOwner}/${repoData.project_repository}/readme`,
@@ -221,53 +236,59 @@ export default function RepoPageClient({
             ),
             octokit.request(
               `GET /repos/${repoOwner}/${repoData.project_repository}/collaborators`,
-              { owner: repoOwner, repo: repoData.project_repository, per_page: 100 }
+              {
+                owner: repoOwner,
+                repo: repoData.project_repository,
+                per_page: 100,
+              }
             ),
           ]);
-          
+
           if (cancelled) return;
-          
+
           setContributors(contributorsResponse.data);
           setCollabs(collaboratorsResponse.data);
 
           // Transform issues
-          const transformedIssues = recentIssuesResponse.data.map((issue: any) => ({
-            id: issue.id,
-            issue_name: issue.title,
-            issue_description: issue.body || "",
-            issue_url: issue.html_url,
-            project_issues: issue.number.toString(),
-            issue_date: issue.created_at,
-            Difficulty:
-              issue.labels.find((label: any) =>
-                [
-                  "easy",
-                  "medium",
-                  "hard",
-                  "beginner",
-                  "intermediate",
-                  "advanced",
-                ].includes(label.name.toLowerCase())
-              )?.name || "medium",
-            priority:
-              issue.labels.find((label: any) =>
-                ["low", "medium", "high", "critical"].includes(
-                  label.name.toLowerCase()
-                )
-              )?.name || "medium",
-            project_repository: repoData.project_repository,
-            rewardAmount:
-              issue.labels
-                .find((label: any) =>
-                  label.name.toLowerCase().includes("reward")
-                )
-                ?.name.match(/\d+/)?.[0] || "0",
-            assignees: issue.assignees || [],
-            labels: issue.labels || [],
-            state: issue.state,
-            updated_at: issue.updated_at,
-            user: issue.user,
-          }));
+          const transformedIssues = recentIssuesResponse.data.map(
+            (issue: any) => ({
+              id: issue.id,
+              issue_name: issue.title,
+              issue_description: issue.body || "",
+              issue_url: issue.html_url,
+              project_issues: issue.number.toString(),
+              issue_date: issue.created_at,
+              Difficulty:
+                issue.labels.find((label: any) =>
+                  [
+                    "easy",
+                    "medium",
+                    "hard",
+                    "beginner",
+                    "intermediate",
+                    "advanced",
+                  ].includes(label.name.toLowerCase())
+                )?.name || "medium",
+              priority:
+                issue.labels.find((label: any) =>
+                  ["low", "medium", "high", "critical"].includes(
+                    label.name.toLowerCase()
+                  )
+                )?.name || "medium",
+              project_repository: repoData.project_repository,
+              rewardAmount:
+                issue.labels
+                  .find((label: any) =>
+                    label.name.toLowerCase().includes("reward")
+                  )
+                  ?.name.match(/\d+/)?.[0] || "0",
+              assignees: issue.assignees || [],
+              labels: issue.labels || [],
+              state: issue.state,
+              updated_at: issue.updated_at,
+              user: issue.user,
+            })
+          );
           setIssues(transformedIssues);
           setLanguages(languagesResponse.data);
 
@@ -308,9 +329,9 @@ export default function RepoPageClient({
               { owner: repoOwner, repo: repoData.project_repository, headers }
             ),
           ]);
-          
+
           if (cancelled) return;
-          
+
           setContributors(contributorsResponse.data);
           setLanguages(languagesResponse.data);
 
@@ -327,7 +348,7 @@ export default function RepoPageClient({
           ]);
           setCommitData(commitsResponse.data);
         }
-        
+
         fetchedDetailsRef.current = true;
       } catch (error: any) {
         if (error?.status === 429) {
@@ -338,7 +359,7 @@ export default function RepoPageClient({
         console.error("Error fetching GitHub data:", error);
       }
     }
-    
+
     fetchGitHubData();
     return () => {
       cancelled = true;
@@ -449,14 +470,17 @@ export default function RepoPageClient({
   const languagePercentages = useMemo(() => {
     if (!languages) return {};
     const totalBytes = Object.values(languages).reduce(
-      (acc: number, bytes) => acc + (typeof bytes === "number" ? bytes : Number(bytes) || 0),
+      (acc: number, bytes) =>
+        acc + (typeof bytes === "number" ? bytes : Number(bytes) || 0),
       0
     );
     if (!totalBytes) return {};
     const result: { [key: string]: number } = {};
     for (const [lang, bytes] of Object.entries(languages)) {
       const byteValue = typeof bytes === "number" ? bytes : Number(bytes) || 0;
-      result[lang] = Number.parseFloat(((byteValue / totalBytes) * 100).toFixed(1));
+      result[lang] = Number.parseFloat(
+        ((byteValue / totalBytes) * 100).toFixed(1)
+      );
     }
     return result;
   }, [languages]);
@@ -473,7 +497,8 @@ export default function RepoPageClient({
       <Suspense fallback={<div>Loading...</div>}>
         {rateLimitExceeded && (
           <div className="fixed top-0 left-0 right-0 bg-yellow-500 dark:text-white text-black p-4 text-center z-50">
-            Rate limit exceeded. Please wait {retryAfter} seconds before trying again.
+            Rate limit exceeded. Please wait {retryAfter} seconds before trying
+            again.
           </div>
         )}
         <div className="flex min-h-screen">
@@ -597,19 +622,23 @@ export default function RepoPageClient({
                               let textColor, dotColor;
                               switch (lang.toLowerCase()) {
                                 case "typescript":
-                                  textColor = "text-blue-700 dark:text-blue-400";
+                                  textColor =
+                                    "text-blue-700 dark:text-blue-400";
                                   dotColor = "bg-blue-600";
                                   break;
                                 case "javascript":
-                                  textColor = "text-yellow-500 dark:text-yellow-300";
+                                  textColor =
+                                    "text-yellow-500 dark:text-yellow-300";
                                   dotColor = "bg-yellow-400";
                                   break;
                                 case "css":
-                                  textColor = "text-purple-700 dark:text-purple-400";
+                                  textColor =
+                                    "text-purple-700 dark:text-purple-400";
                                   dotColor = "bg-purple-600";
                                   break;
                                 case "python":
-                                  textColor = "text-green-600 dark:text-green-400";
+                                  textColor =
+                                    "text-green-600 dark:text-green-400";
                                   dotColor = "bg-green-500";
                                   break;
                                 case "java":
@@ -618,12 +647,14 @@ export default function RepoPageClient({
                                   break;
                                 case "c++":
                                 case "cpp":
-                                  textColor = "text-pink-600 dark:text-pink-400";
+                                  textColor =
+                                    "text-pink-600 dark:text-pink-400";
                                   dotColor = "bg-pink-500";
                                   break;
                                 case "c#":
                                 case "csharp":
-                                  textColor = "text-indigo-600 dark:text-indigo-400";
+                                  textColor =
+                                    "text-indigo-600 dark:text-indigo-400";
                                   dotColor = "bg-indigo-500";
                                   break;
                                 case "ruby":
@@ -631,41 +662,59 @@ export default function RepoPageClient({
                                   dotColor = "bg-red-700";
                                   break;
                                 case "go":
-                                  textColor = "text-cyan-600 dark:text-cyan-400";
+                                  textColor =
+                                    "text-cyan-600 dark:text-cyan-400";
                                   dotColor = "bg-cyan-500";
                                   break;
                                 case "swift":
-                                  textColor = "text-orange-600 dark:text-orange-400";
+                                  textColor =
+                                    "text-orange-600 dark:text-orange-400";
                                   dotColor = "bg-orange-500";
                                   break;
                                 case "kotlin":
-                                  textColor = "text-purple-500 dark:text-purple-300";
+                                  textColor =
+                                    "text-purple-500 dark:text-purple-300";
                                   dotColor = "bg-purple-400";
                                   break;
                                 case "html":
-                                  textColor = "text-orange-700 dark:text-orange-500";
+                                  textColor =
+                                    "text-orange-700 dark:text-orange-500";
                                   dotColor = "bg-orange-600";
                                   break;
                                 case "php":
-                                  textColor = "text-indigo-500 dark:text-indigo-300";
+                                  textColor =
+                                    "text-indigo-500 dark:text-indigo-300";
                                   dotColor = "bg-indigo-400";
                                   break;
                                 case "shell":
                                 case "bash":
-                                  textColor = "text-lime-600 dark:text-lime-400";
+                                  textColor =
+                                    "text-lime-600 dark:text-lime-400";
                                   dotColor = "bg-lime-500";
                                   break;
                                 default:
-                                  textColor = "text-neutral-600 dark:text-neutral-400";
+                                  textColor =
+                                    "text-neutral-600 dark:text-neutral-400";
                                   dotColor = "bg-neutral-500";
                               }
                               return (
-                                <div key={lang} className="flex items-center mr-4 mb-1">
+                                <div
+                                  key={lang}
+                                  className="flex items-center mr-4 mb-1"
+                                >
                                   <div className="rounded-xl">
-                                    <span className={`h-2.5 w-2.5 ${dotColor} rounded-full mr-1.5`}></span>
+                                    <span
+                                      className={`h-2.5 w-2.5 ${dotColor} rounded-full mr-1.5`}
+                                    ></span>
                                   </div>
-                                  <div className={`overAVAX-hidden text-sm rounded-full font-medium dark:text-white text-custom-neutral`}>
-                                    <span className={`${textColor} text-xl rounded-full mr-1.5`}>•</span>
+                                  <div
+                                    className={`overMonad-hidden text-sm rounded-full font-medium dark:text-white text-custom-neutral`}
+                                  >
+                                    <span
+                                      className={`${textColor} text-xl rounded-full mr-1.5`}
+                                    >
+                                      •
+                                    </span>
                                     <span className="text-[14px]">{lang}</span>{" "}
                                     <span className="dark:text-custom-neutral text-[14px] text-custom-neutral">
                                       {percentage}%
@@ -716,7 +765,7 @@ export default function RepoPageClient({
                       </div>
                     </div>
                     <div
-                      className={`dark:text-neutral-300 text-neutral-600 pt-4 h-[${width}] overAVAX-hidden`}
+                      className={`dark:text-neutral-300 text-neutral-600 pt-4 h-[${width}] overMonad-hidden`}
                     >
                       {repoData?.longdis}
                     </div>
@@ -724,7 +773,7 @@ export default function RepoPageClient({
                       <h3 className="text-lg font-semibold mb-2">
                         AI Generated Project Summary:
                       </h3>
-                      <div className="text-sm whitespace-pre-wrap max-w-full overAVAX-x-auto">
+                      <div className="text-sm whitespace-pre-wrap max-w-full overMonad-x-auto">
                         <ReactMarkdown>
                           {isExpanded
                             ? repoData?.aiDescription || aiReply
@@ -873,8 +922,8 @@ export default function RepoPageClient({
                                     <div className="flex flex-col sm:flex-row sm:justify-between gap-2 text-sm">
                                       <div className="text-center sm:text-right flex">
                                         <img
-                                          src="https://build.avax.network/favicon.ico"
-                                          alt="AVAX Logo"
+                                          src="https://cdn.prod.website-files.com/667c57e6f9254a4b6d914440/67b135627be8437b3cda15ae_Monad%20Logomark.svg"
+                                          alt="Monad Logo"
                                           width={24}
                                           height={24}
                                           className="mr-2"
@@ -1035,7 +1084,8 @@ export default function RepoPageClient({
                         className="space-y-4"
                         onSubmit={(e) => {
                           e.preventDefault();
-                          const email = (e.target as HTMLFormElement).email.value;
+                          const email = (e.target as HTMLFormElement).email
+                            .value;
                           const skillsJson = JSON.stringify(skills);
                           assignIssue(`${email}`, skillsJson);
                         }}

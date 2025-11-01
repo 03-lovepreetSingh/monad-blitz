@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import {
@@ -104,7 +103,7 @@ interface UserIssue {
   rewardAmount: string;
 }
 
-interface Issue{
+interface Issue {
   contributorRequests: AssignedIssue;
   issues: UserIssue;
 }
@@ -120,29 +119,30 @@ export default function AssignedProjectsClient({
   userIssues,
   assignedIssues,
 }: AssignedProjectsClientProps) {
-  console.log(projects,"projects");
-  console.log(assignedIssues,"assignedIssues");
-  console.log(userIssues,"userIssues");
+  console.log(projects, "projects");
+  console.log(assignedIssues, "assignedIssues");
+  console.log(userIssues, "userIssues");
   const { isShrunk } = useSidebarContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
-      const checkMobile = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-  
-      checkMobile();
-      window.addEventListener("resize", checkMobile);
-  
-      return () => window.removeEventListener("resize", checkMobile);
-    }, []);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const filteredProjects = projects.filter((project) => {
     const searchLower = searchTerm.toLowerCase();
     const statusMatch =
-      statusFilter === "all" || (project.status || "").toLowerCase() === statusFilter;
+      statusFilter === "all" ||
+      (project.status || "").toLowerCase() === statusFilter;
     const searchMatch =
       (project.projectName || "").toLowerCase().includes(searchLower) ||
       (project.shortdes || "").toLowerCase().includes(searchLower);
@@ -152,14 +152,17 @@ export default function AssignedProjectsClient({
   const filteredIssues = userIssues.filter((issue) => {
     const searchLower = searchTerm.toLowerCase();
     const statusMatch =
-      statusFilter === "all" || (issue.contributorRequests.status || "").toLowerCase() === statusFilter;
+      statusFilter === "all" ||
+      (issue.contributorRequests.status || "").toLowerCase() === statusFilter;
     const searchMatch =
-      (issue.contributorRequests.issue_name || "").toLowerCase().includes(searchLower) ||
-      (issue.contributorRequests.issue_description || "").toLowerCase().includes(searchLower);
+      (issue.contributorRequests.issue_name || "")
+        .toLowerCase()
+        .includes(searchLower) ||
+      (issue.contributorRequests.issue_description || "")
+        .toLowerCase()
+        .includes(searchLower);
     return statusMatch && searchMatch;
   });
-
-
 
   // Helper function to determine status color
   function getStatusColor(status?: string) {
@@ -236,12 +239,12 @@ export default function AssignedProjectsClient({
       className={`
         flex-1 transition-all duration-300 ease-in-out
          ${
-                isMobile
-                  ? "ml-0 w-full"
-                  : isShrunk
-                  ? "ml-16 w-[calc(100%-4rem)]"
-                  : "ml-64 w-[calc(100%-16rem)]"
-              }
+           isMobile
+             ? "ml-0 w-full"
+             : isShrunk
+             ? "ml-16 w-[calc(100%-4rem)]"
+             : "ml-64 w-[calc(100%-16rem)]"
+         }
       `}
     >
       <Topbar />
@@ -267,13 +270,12 @@ export default function AssignedProjectsClient({
                     placeholder="Search projects or issues..."
                     className="pl-10 w-full sm:w-64"
                     value={searchTerm}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setSearchTerm(e.target.value)
+                    }
                   />
                 </div>
-                <Select
-                  value={statusFilter}
-                  onValueChange={setStatusFilter}
-                >
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-full sm:w-32">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue />
@@ -345,15 +347,15 @@ export default function AssignedProjectsClient({
                           0
                         )
                         .toFixed(7)}{" "}
-                      <span className="text-sm lg:text-base">AVAX</span>
+                      <span className="text-sm lg:text-base">Monad</span>
                     </p>
                   </div>
                   <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center ">
                     <img
-                      src="https://build.AVAX.network/favicon.ico"
+                      src="https://cdn.prod.website-files.com/667c57e6f9254a4b6d914440/67b135627be8437b3cda15ae_Monad%20Logomark.svg"
                       width={16}
                       height={16}
-                      alt="AVAX Icon"
+                      alt="Monad Icon"
                       className="h-4 w-4"
                     />
                   </div>
@@ -460,11 +462,7 @@ export default function AssignedProjectsClient({
                           {/* Project Owner */}
                           <div className="flex items-center gap-2">
                             <Avatar className="h-5 w-5 lg:h-6 lg:w-6">
-                              <AvatarImage
-                                src={
-                                  project.image_url
-                                }
-                              />
+                              <AvatarImage src={project.image_url} />
                               <AvatarFallback className="text-xs">
                                 {project.projectOwner
                                   ?.slice(0, 2)
@@ -491,13 +489,10 @@ export default function AssignedProjectsClient({
                               ))}
                             {Object.keys(project.languages || {}).length >
                               3 && (
-                              <Badge
-                                variant="secondary"
-                                className="text-xs"
-                              >
+                              <Badge variant="secondary" className="text-xs">
                                 +
-                                {Object.keys(project.languages || {})
-                                  .length - 3}
+                                {Object.keys(project.languages || {}).length -
+                                  3}
                               </Badge>
                             )}
                           </div>
@@ -570,9 +565,7 @@ export default function AssignedProjectsClient({
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  View Issue
-                                </DropdownMenuItem>
+                                <DropdownMenuItem>View Issue</DropdownMenuItem>
                                 <DropdownMenuItem>
                                   Apply to Work
                                 </DropdownMenuItem>
@@ -590,11 +583,14 @@ export default function AssignedProjectsClient({
                           {/* Priority and Difficulty */}
                           <div className="flex flex-wrap items-center gap-2">
                             <Badge
-                              className={getPriorityColor(issue.issues.priority)}
+                              className={getPriorityColor(
+                                issue.issues.priority
+                              )}
                               variant="secondary"
                             >
                               {issue.issues.priority?.charAt(0)?.toUpperCase() +
-                                issue.issues.priority?.slice(1) || "Unknown"}{" "}
+                                issue.issues.priority?.slice(1) ||
+                                "Unknown"}{" "}
                               Priority
                             </Badge>
                             <Badge
@@ -603,7 +599,9 @@ export default function AssignedProjectsClient({
                               )}
                               variant="secondary"
                             >
-                              {issue.issues.Difficulty?.charAt(0)?.toUpperCase() +
+                              {issue.issues.Difficulty?.charAt(
+                                0
+                              )?.toUpperCase() +
                                 issue.issues.Difficulty?.slice(1) || "Unknown"}
                             </Badge>
                           </div>
@@ -611,10 +609,10 @@ export default function AssignedProjectsClient({
                           {/* Reward Amount */}
                           <div className="flex items-center gap-2 p-3 bg-neutral-50 dark:bg-neutral-950 rounded-lg">
                             <img
-                              src="https://build.AVAX.network/favicon.ico"
+                              src="https://cdn.prod.website-files.com/667c57e6f9254a4b6d914440/67b135627be8437b3cda15ae_Monad%20Logomark.svg"
                               width={24}
                               height={24}
-                              alt="AVAX Icon"
+                              alt="Monad Icon"
                               className="h-5 w-5 lg:h-6 lg:w-6"
                             />
                             <div className="min-w-0 flex-1">
@@ -622,7 +620,7 @@ export default function AssignedProjectsClient({
                                 Reward
                               </p>
                               <p className="text-sm lg:text-lg font-bold text-neutral-900 dark:text-neutral-100 truncate">
-                                {issue.issues.rewardAmount} AVAX
+                                {issue.issues.rewardAmount} Monad
                               </p>
                             </div>
                           </div>
@@ -676,7 +674,11 @@ export default function AssignedProjectsClient({
                               size="sm"
                               variant="outline"
                               className="flex-1 text-xs lg:text-sm bg-transparent"
-                              onClick={() =>{router.push(`/myProjects/Issues?repo=${issue.issues.project_repository}&issue=${issue.issues.project_issues}`)}}
+                              onClick={() => {
+                                router.push(
+                                  `/myProjects/Issues?repo=${issue.issues.project_repository}&issue=${issue.issues.project_issues}`
+                                );
+                              }}
                             >
                               View Details
                             </Button>
@@ -693,10 +695,4 @@ export default function AssignedProjectsClient({
       </div>
     </div>
   );
-
-
-
-
-
-    
 }

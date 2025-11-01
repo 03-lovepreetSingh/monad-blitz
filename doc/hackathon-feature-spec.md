@@ -3,6 +3,7 @@
 ## Database Schema
 
 ### 1. Hackathons Table
+
 ```sql
 CREATE TABLE hackathons (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -18,6 +19,7 @@ CREATE TABLE hackathons (
 ```
 
 ### 2. Hack Projects Table
+
 ```sql
 CREATE TABLE hack_projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -35,6 +37,7 @@ CREATE TABLE hack_projects (
 ```
 
 ### 3. Project Votes Table
+
 ```sql
 CREATE TABLE project_votes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -48,6 +51,7 @@ CREATE TABLE project_votes (
 ```
 
 ### 4. Project Split Payments Table
+
 ```sql
 CREATE TABLE project_split_payments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -73,20 +77,20 @@ interface IHackathonSplit {
         uint256 contributorShare;
         uint256 maintainerShare;
     }
-    
+
     event PaymentSplit(
         bytes32 projectId,
         uint256 totalAmount,
         uint256 contributorShare,
         uint256 maintainerShare
     );
-    
+
     function calculateSplit(
         uint256 totalAmount,
         uint256 contributorVotes,
         uint256 maintainerVotes
     ) external pure returns (Split memory);
-    
+
     function executeSplit(
         bytes32 projectId,
         address[] calldata contributors,
@@ -100,6 +104,7 @@ interface IHackathonSplit {
 ## API Routes
 
 ### 1. Hackathon Management
+
 - `POST /api/hackathons/create` - Create new hackathon
 - `GET /api/hackathons/list` - List all hackathons
 - `GET /api/hackathons/{id}` - Get hackathon details
@@ -107,6 +112,7 @@ interface IHackathonSplit {
 - `DELETE /api/hackathons/{id}` - Delete hackathon
 
 ### 2. Hack Projects
+
 - `POST /api/hack-projects/create` - Create new project
 - `GET /api/hack-projects/list/{hackathonId}` - List projects by hackathon
 - `GET /api/hack-projects/{id}` - Get project details
@@ -114,39 +120,46 @@ interface IHackathonSplit {
 - `DELETE /api/hack-projects/{id}` - Delete project
 
 ### 3. Voting System
+
 - `POST /api/hack-projects/vote` - Submit vote
 - `GET /api/hack-projects/{id}/votes` - Get project votes
 - `DELETE /api/hack-projects/vote/{id}` - Remove vote
 
 ### 4. Split Payments
+
 - `POST /api/hack-projects/split` - Execute split payment
 - `GET /api/hack-projects/{id}/splits` - Get split payment history
 
 ## Frontend Routes
 
 ### 1. Hackathon Pages
+
 - `/hackathons` - List all hackathons
 - `/hackathons/[id]` - Hackathon details
 - `/hackathons/[id]/submit` - Submit project
 - `/hackathons/[id]/projects` - View all projects
 
 ### 2. Project Pages
+
 - `/hackathons/[hackathonId]/projects/[id]` - Project details
 - `/hackathons/[hackathonId]/projects/[id]/vote` - Voting interface
 
 ## Implementation Notes
 
 1. **Authentication & Authorization**
+
    - Use existing auth system
    - Add role-based access for hackathon management
    - Implement vote verification
 
 2. **Smart Contract Integration**
+
    - Deploy on same network as existing contracts
    - Implement proper error handling
    - Add events for important actions
 
 3. **UI Components**
+
    - Follow existing design system
    - Reuse existing components where possible
    - Implement responsive design
@@ -154,4 +167,4 @@ interface IHackathonSplit {
 4. **Testing Strategy**
    - Unit tests for smart contracts
    - API integration tests
-   - E2E tests for critical AVAXs
+   - E2E tests for critical Monads

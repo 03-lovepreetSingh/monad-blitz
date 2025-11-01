@@ -1,6 +1,6 @@
 "use client";
 
-import { wagmiAdapter, projectId, networks, AVAXTestnet,avalancheTestnet } from "../config";
+import { wagmiAdapter, projectId, networks, monadTestnet } from "../config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createAppKit } from "@reown/appkit/react";
 import React, { type ReactNode } from "react";
@@ -31,7 +31,7 @@ const metadata = {
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  networks: [avalancheTestnet],
+  networks: [monadTestnet],
   defaultNetwork: networks[0],
   metadata: metadata,
   features: {

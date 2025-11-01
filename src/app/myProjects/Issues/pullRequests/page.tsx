@@ -217,8 +217,8 @@ export default function IssuePullRequestsPage() {
 
                       <div className="flex gap-1 text-neutral-300 font-bold text-xl">
                         <img
-                          src={`https://build.AVAX.network/favicon.ico`}
-                          alt="AVAX"
+                          src={`https://cdn.prod.website-files.com/667c57e6f9254a4b6d914440/67b135627be8437b3cda15ae_Monad%20Logomark.svg`}
+                          alt="Monad"
                           width={20}
                           height={20}
                         />

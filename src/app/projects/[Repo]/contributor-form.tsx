@@ -1,60 +1,64 @@
-"use client"
+"use client";
 
-import { useState, useContext } from "react"
-import { useSession } from "next-auth/react"
-import { useTheme } from "next-themes"
-import Image from "next/image"
-import { Button } from "../../../components/ui/button"
-import { Input } from "../../../components/ui/input"
-import { Label } from "../../../components/ui/label"
-import { Textarea } from "../../../components/ui/textarea"
-import { Progress } from "../../../components/ui/progress"
-import { Checkbox } from "../../../components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group"
+import { useState, useContext } from "react";
+import { useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { Textarea } from "../../../components/ui/textarea";
+import { Progress } from "../../../components/ui/progress";
+import { Checkbox } from "../../../components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui/select"
-import { X } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from "../../../components/ui/alert"
+} from "../../../components/ui/select";
+import { X } from "lucide-react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../components/ui/alert";
 import { ThemeModalContext } from "./repo-page";
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 interface FormData {
-  username:string
-  projectName:string
+  username: string;
+  projectName: string;
 
-  name: string
-  email: string
-  bio: string
-  whyContribute: string
-  exampleProjects: string
-  languages: string[]
-  frameworks: string[]
-  tools: string[]
-  otherSkills: string
+  name: string;
+  email: string;
+  bio: string;
+  whyContribute: string;
+  exampleProjects: string;
+  languages: string[];
+  frameworks: string[];
+  tools: string[];
+  otherSkills: string;
   experienceMatrix: {
     [key: string]: {
-      years: string
-      rating: number
-    }
-  }
-  resume: File | null
-  samplePatches: File | null
-  sshPublicKey: string
-  prLinks: string
-  accessLevel: string
-  ndaAgreement: boolean
-  twoFactorEnabled: boolean
-  earliestStartDate: string
-  codeOfConductAgreed: boolean
-  contributionGuidelinesAgreed: boolean
-  fullName: string
-  signatureDate: string
-// Add this missing field
+      years: string;
+      rating: number;
+    };
+  };
+  resume: File | null;
+  samplePatches: File | null;
+  sshPublicKey: string;
+  prLinks: string;
+  accessLevel: string;
+  ndaAgreement: boolean;
+  twoFactorEnabled: boolean;
+  earliestStartDate: string;
+  codeOfConductAgreed: boolean;
+  contributionGuidelinesAgreed: boolean;
+  fullName: string;
+  signatureDate: string;
+  // Add this missing field
 }
 
 const programmingLanguages = [
@@ -70,24 +74,24 @@ const programmingLanguages = [
   "Swift",
   "Kotlin",
   "Rust",
-]
+];
 interface ContributorApplicationFormProps {
   repo: string;
 }
-export default function ContributorApplicationForm({repo}:ContributorApplicationFormProps) {
-
-
-  const {data:session}=useSession();    
+export default function ContributorApplicationForm({
+  repo,
+}: ContributorApplicationFormProps) {
+  const { data: session } = useSession();
   const theme = useTheme();
-  const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 6
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 6;
   const { isOpen, setIsOpen } = useContext(ThemeModalContext);
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     bio: "",
-    projectName:repo,
+    projectName: repo,
     whyContribute: "",
     exampleProjects: "",
     languages: [],
@@ -107,30 +111,28 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
     contributionGuidelinesAgreed: false,
     fullName: "",
     signatureDate: "",
-    username:session?.user?.username || "",
-  })
-
-
+    username: session?.user?.username || "",
+  });
 
   const handleInputChange = (field: keyof FormData, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleArrayChange = (field: keyof FormData, item: string) => {
     setFormData((prev) => {
-      const currentArray = prev[field] as string[]
+      const currentArray = prev[field] as string[];
       if (currentArray.includes(item)) {
-        return { ...prev, [field]: currentArray.filter((i) => i !== item) }
+        return { ...prev, [field]: currentArray.filter((i) => i !== item) };
       } else {
-        return { ...prev, [field]: [...currentArray, item] }
+        return { ...prev, [field]: [...currentArray, item] };
       }
-    })
-  }
+    });
+  };
 
   const handleExperienceChange = (
     language: string,
     key: "years" | "rating",
-    value: string | number,
+    value: string | number
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -141,12 +143,12 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
           [key]: value,
         },
       },
-    }))
-  }
+    }));
+  };
 
   const handleFileChange = (field: keyof FormData, file: File | null) => {
-    setFormData((prev) => ({ ...prev, [field]: file }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: file }));
+  };
 
   const validateSSHKey = (key: string) => {
     // Basic validation for SSH public key format (e.g., starts with ssh-rsa, ssh-ed25519, etc.)
@@ -157,16 +159,23 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
       key.startsWith("ecdsa-sha2-nistp384 ") ||
       key.startsWith("ecdsa-sha2-nistp521 ") ||
       key.startsWith("ssh-ed25519 ")
-    )
-  }
+    );
+  };
 
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const nextStep = () => {
     // Basic validation before moving to the next step
     if (currentStep === 1) {
-      if (!formData.name || !formData.email || !formData.bio || !formData.whyContribute) {
-        setAlertMessage("Please fill in all required personal information fields.");
+      if (
+        !formData.name ||
+        !formData.email ||
+        !formData.bio ||
+        !formData.whyContribute
+      ) {
+        setAlertMessage(
+          "Please fill in all required personal information fields."
+        );
         return;
       }
     } else if (currentStep === 2) {
@@ -176,14 +185,21 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
         formData.tools.length === 0 &&
         !formData.otherSkills
       ) {
-        setAlertMessage("Please select at least one skill or enter other skills.");
+        setAlertMessage(
+          "Please select at least one skill or enter other skills."
+        );
         return;
       }
     } else if (currentStep === 3) {
       // Validate experience matrix for selected languages
       for (const lang of formData.languages) {
-        if (!formData.experienceMatrix[lang]?.years || !formData.experienceMatrix[lang]?.rating) {
-          setAlertMessage(`Please provide years of experience and self-rating for ${lang}.`);
+        if (
+          !formData.experienceMatrix[lang]?.years ||
+          !formData.experienceMatrix[lang]?.rating
+        ) {
+          setAlertMessage(
+            `Please provide years of experience and self-rating for ${lang}.`
+          );
           return;
         }
       }
@@ -199,7 +215,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
         !formData.twoFactorEnabled ||
         !formData.earliestStartDate
       ) {
-        setAlertMessage("Please fill in all required access and preferences fields.");
+        setAlertMessage(
+          "Please fill in all required access and preferences fields."
+        );
         return;
       }
     }
@@ -225,92 +243,90 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
   // )}
 
   const prevStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1))
-  }
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  };
 
   const handleSubmit = async () => {
-  try {
-    // Handle file uploads first (you'll need to implement file upload logic)
-    const resumeUrl = null;
-    const samplePatchesUrl = null;
-    
-    if (formData.resume) {
-      const saveResume=async() => {
-        // Generate timestamp and create unique filename
-        const timestamp = Date.now();
-        const fileExtension = formData?.resume?.name.split('.').pop();
-        const baseFileName = formData?.resume?.name.replace(/\.[^/.]+$/, "");
-        const uniqueFileName = `${baseFileName}_${timestamp}.${fileExtension}`;
-        
-        const signedUrlResponse = await fetch ('/api/s3',{
-          method:'POST',
-          headers: {
-                    "Content-Type": "application/json",
-          },
-          body:JSON.stringify({
-            fileName: uniqueFileName,
-            fileType:formData?.resume?.type,
-          })
-        })
-        if (!signedUrlResponse.ok) {
-                throw new Error(`Failed to get signed URL: ${signedUrlResponse.statusText}`);
-            }
-      const { signedUrl } = await signedUrlResponse.json();
+    try {
+      // Handle file uploads first (you'll need to implement file upload logic)
+      const resumeUrl = null;
+      const samplePatchesUrl = null;
 
-      await fetch(signedUrl, {
-                method: "PUT",
-                body: formData?.resume,
-                
-            });
-          
+      if (formData.resume) {
+        const saveResume = async () => {
+          // Generate timestamp and create unique filename
+          const timestamp = Date.now();
+          const fileExtension = formData?.resume?.name.split(".").pop();
+          const baseFileName = formData?.resume?.name.replace(/\.[^/.]+$/, "");
+          const uniqueFileName = `${baseFileName}_${timestamp}.${fileExtension}`;
+
+          const signedUrlResponse = await fetch("/api/s3", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              fileName: uniqueFileName,
+              fileType: formData?.resume?.type,
+            }),
+          });
+          if (!signedUrlResponse.ok) {
+            throw new Error(
+              `Failed to get signed URL: ${signedUrlResponse.statusText}`
+            );
+          }
+          const { signedUrl } = await signedUrlResponse.json();
+
+          await fetch(signedUrl, {
+            method: "PUT",
+            body: formData?.resume,
+          });
+        };
+
+        saveResume();
       }
-       
-      saveResume();
-      
+
+      if (formData.samplePatches) {
+      }
+
+      // Generate the same timestamp and filename for the URL
+      const timestamp = Date.now();
+      const fileExtension = formData?.resume?.name.split(".").pop();
+      const baseFileName = formData?.resume?.name.replace(/\.[^/.]+$/, "");
+      const uniqueFileName = `${baseFileName}_${timestamp}.${fileExtension}`;
+
+      const submissionData = {
+        ...formData,
+        resumeUrl: `https://${process.env.AWS_S3_BUCKET_NAME}.s3.tebi.io/${uniqueFileName}`,
+        samplePatchesUrl,
+        // Remove File objects as they can't be serialized
+        resume: undefined,
+        samplePatches: undefined,
+      };
+
+      const response = await fetch("/api/contributor-applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      const result = await response.json();
+
+      // Use toast notifications instead of alert
+      if (result.success) {
+        toast.success("Application submitted successfully!");
+        setIsOpen(false);
+        // Reset form or redirect
+      } else {
+        toast.error("Error submitting application: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Error submitting application");
     }
-    
-    if (formData.samplePatches) {
-      
-    }
-
-    // Generate the same timestamp and filename for the URL
-    const timestamp = Date.now();
-    const fileExtension = formData?.resume?.name.split('.').pop();
-    const baseFileName = formData?.resume?.name.replace(/\.[^/.]+$/, "");
-    const uniqueFileName = `${baseFileName}_${timestamp}.${fileExtension}`;
-
-    const submissionData = {
-      ...formData,
-      resumeUrl:`https://${process.env.AWS_S3_BUCKET_NAME}.s3.tebi.io/${uniqueFileName}`,
-      samplePatchesUrl,
-      // Remove File objects as they can't be serialized
-      resume: undefined,
-      samplePatches: undefined
-    };
-
-    const response = await fetch('/api/contributor-applications', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(submissionData),
-    });
-
-    const result = await response.json();
-
-    // Use toast notifications instead of alert
-    if (result.success) {
-      toast.success("Application submitted successfully!");
-      setIsOpen(false);
-      // Reset form or redirect
-    } else {
-      toast.error("Error submitting application: " + result.error);
-    }
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    toast.error("Error submitting application");
-  }
-};
+  };
 
   // Don't render anything if modal is not open
   if (!isOpen) return null;
@@ -318,45 +334,44 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
   return (
     <div className="fixed inset-0 z-[2000] flex h-screen items-center justify-center">
       {/* Backdrop overlay */}
-      <div 
-        className="absolute  inset-0 bg-black/50 backdrop-blur-sm" 
+      <div
+        className="absolute  inset-0 bg-black/50 backdrop-blur-sm"
         onClick={() => setIsOpen(false)}
       />
-      
+
       {/* Modal content */}
-      <div className="relative dark:bg-neutral-900 bg-white rounded-lg shadow-xl w-full max-w-[90vw] max-h-[90vh] overAVAX-y-auto">
+      <div className="relative dark:bg-neutral-900 bg-white rounded-lg shadow-xl w-full max-w-[90vw] max-h-[90vh] overMonad-y-auto">
         <div className="p-6 pb-4">
           <div className="flex items-start justify-between gap-4">
             {/* Logo and Title */}
             <div className="flex flex-col items-start gap-2">
-            
-             <div className="dark:block hidden">
+              <div className="dark:block hidden">
                 <Image
-                  src="/NeowareLogo.png"
+                  src="https://cdn.prod.website-files.com/667c57e6f9254a4b6d914440/67b135627be8437b3cda15ae_Monad%20Logomark.svg"
                   alt="Company Logo"
                   width={120}
                   height={40}
                   className="mb-2"
-               />
-               </div>
-               <div className="block dark:hidden">
-                        <Image
+                />
+              </div>
+              <div className="block dark:hidden">
+                <Image
                   src="/NeowareLogo1.png"
                   alt="Company Logo"
                   width={120}
                   height={40}
                   className="mb-2"
                 />
-               </div>
+              </div>
               <h2 className="text-2xl font-bold">Contributor Application</h2>
             </div>
 
             {/* Progress and Close Button */}
             <div className="flex flex-col items-end gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-gray-500 hover:text-gray-700" 
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-500 hover:text-gray-700"
                 onClick={() => setIsOpen(false)}
               >
                 <X className="h-6 w-6" />
@@ -365,18 +380,23 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
               <p className="text-sm text-gray-600">
                 Step {currentStep} of {totalSteps}
               </p>
-              <Progress value={(currentStep / totalSteps) * 100} className="h-2 w-full min-w-[150px]" />
+              <Progress
+                value={(currentStep / totalSteps) * 100}
+                className="h-2 w-full min-w-[150px]"
+              />
             </div>
           </div>
         </div>
-        
+
         {/* Form content */}
         <div className="p-6 pt-0">
           <form onSubmit={handleSubmit}>
             {/* Step 1: Personal Information */}
             {currentStep === 1 && (
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Personal Information
+                </h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name *</Label>
@@ -384,7 +404,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                       id="name"
                       type="text"
                       value={formData.name}
-                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("name", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -394,7 +416,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -411,22 +435,30 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="whyContribute">Why do you want to contribute? *</Label>
+                  <Label htmlFor="whyContribute">
+                    Why do you want to contribute? *
+                  </Label>
                   <Textarea
                     id="whyContribute"
                     value={formData.whyContribute}
-                    onChange={(e) => handleInputChange("whyContribute", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("whyContribute", e.target.value)
+                    }
                     rows={3}
                     placeholder="Explain your motivation for contributing to this project..."
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="exampleProjects">Example Project Descriptions</Label>
+                  <Label htmlFor="exampleProjects">
+                    Example Project Descriptions
+                  </Label>
                   <Textarea
                     id="exampleProjects"
                     value={formData.exampleProjects}
-                    onChange={(e) => handleInputChange("exampleProjects", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("exampleProjects", e.target.value)
+                    }
                     rows={3}
                     placeholder="Describe some projects you've worked on..."
                   />
@@ -437,7 +469,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
             {/* Step 2: Skills & Technologies */}
             {currentStep === 2 && (
               <div className="space-y-6">
-                <h3 className="text-xl font-semibold mb-4">Skills & Technologies</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Skills & Technologies
+                </h3>
                 <div>
                   <Label className="mb-2 block">Programming Languages</Label>
                   <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
@@ -446,9 +480,14 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                         <Checkbox
                           id={`lang-${lang}`}
                           checked={formData.languages.includes(lang)}
-                          onCheckedChange={() => handleArrayChange("languages", lang)}
+                          onCheckedChange={() =>
+                            handleArrayChange("languages", lang)
+                          }
                         />
-                        <Label htmlFor={`lang-${lang}`} className="text-sm font-normal">
+                        <Label
+                          htmlFor={`lang-${lang}`}
+                          className="text-sm font-normal"
+                        >
                           {lang}
                         </Label>
                       </div>
@@ -470,13 +509,21 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                       "Laravel",
                       "Rails",
                     ].map((framework) => (
-                      <div key={framework} className="flex items-center space-x-2">
+                      <div
+                        key={framework}
+                        className="flex items-center space-x-2"
+                      >
                         <Checkbox
                           id={`framework-${framework}`}
                           checked={formData.frameworks.includes(framework)}
-                          onCheckedChange={() => handleArrayChange("frameworks", framework)}
+                          onCheckedChange={() =>
+                            handleArrayChange("frameworks", framework)
+                          }
                         />
-                        <Label htmlFor={`framework-${framework}`} className="text-sm font-normal">
+                        <Label
+                          htmlFor={`framework-${framework}`}
+                          className="text-sm font-normal"
+                        >
                           {framework}
                         </Label>
                       </div>
@@ -502,9 +549,14 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                         <Checkbox
                           id={`tool-${tool}`}
                           checked={formData.tools.includes(tool)}
-                          onCheckedChange={() => handleArrayChange("tools", tool)}
+                          onCheckedChange={() =>
+                            handleArrayChange("tools", tool)
+                          }
                         />
-                        <Label htmlFor={`tool-${tool}`} className="text-sm font-normal">
+                        <Label
+                          htmlFor={`tool-${tool}`}
+                          className="text-sm font-normal"
+                        >
                           {tool}
                         </Label>
                       </div>
@@ -517,7 +569,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                     id="otherSkills"
                     type="text"
                     value={formData.otherSkills}
-                    onChange={(e) => handleInputChange("otherSkills", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("otherSkills", e.target.value)
+                    }
                     placeholder="Enter other skills separated by commas..."
                   />
                 </div>
@@ -527,7 +581,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
             {/* Step 3: Experience Matrix */}
             {currentStep === 3 && (
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold mb-4">Experience Matrix</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Experience Matrix
+                </h3>
                 <p className="mb-4 text-sm text-gray-600">
                   Rate your experience with the languages you selected:
                 </p>
@@ -536,7 +592,8 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                     <Alert variant="destructive">
                       <AlertTitle>No Languages Selected</AlertTitle>
                       <AlertDescription>
-                        Please select programming languages in the previous step to rate your experience.
+                        Please select programming languages in the previous step
+                        to rate your experience.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -545,14 +602,22 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                       <h4 className="mb-3 text-base font-medium">{language}</h4>
                       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                          <Label htmlFor={`years.${language}`}>Years of Experience</Label>
+                          <Label htmlFor={`years.${language}`}>
+                            Years of Experience
+                          </Label>
                           <div className="relative">
                             <select
                               id={`years.${language}`}
                               className="block w-full rounded-md border border-neutral-200 dark:border-neutral-600 bg-neutral-300 dark:bg-neutral-700 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
-                              value={formData.experienceMatrix[language]?.years || ""}
+                              value={
+                                formData.experienceMatrix[language]?.years || ""
+                              }
                               onChange={(e) =>
-                                handleExperienceChange(language, "years", e.target.value)
+                                handleExperienceChange(
+                                  language,
+                                  "years",
+                                  e.target.value
+                                )
                               }
                             >
                               <option value="" disabled>
@@ -573,14 +638,22 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                                 key={rating}
                                 type="button"
                                 variant={
-                                  (formData.experienceMatrix[language]?.rating || 0) >= rating
+                                  (formData.experienceMatrix[language]
+                                    ?.rating || 0) >= rating
                                     ? "default"
                                     : "outline"
                                 }
                                 size="icon"
-                                onClick={() => handleExperienceChange(language, "rating", rating)}
+                                onClick={() =>
+                                  handleExperienceChange(
+                                    language,
+                                    "rating",
+                                    rating
+                                  )
+                                }
                                 className={`h-8 w-8 rounded-full ${
-                                  (formData.experienceMatrix[language]?.rating || 0) >= rating
+                                  (formData.experienceMatrix[language]
+                                    ?.rating || 0) >= rating
                                     ? "bg-blue-500 text-white hover:bg-blue-600"
                                     : "border-gray-300 text-gray-500 hover:bg-gray-100"
                                 }`}
@@ -603,21 +676,32 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                 <h3 className="text-xl font-semibold mb-4">Files & Links</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="resume">Resume (PDF, DOC, DOCX - Max 5MB)</Label>
+                    <Label htmlFor="resume">
+                      Resume (PDF, DOC, DOCX - Max 5MB)
+                    </Label>
                     <Input
                       id="resume"
                       type="file"
                       accept=".pdf,.doc,.docx"
-                      onChange={(e) => handleFileChange("resume", e.target.files?.[0] || null)}
+                      onChange={(e) =>
+                        handleFileChange("resume", e.target.files?.[0] || null)
+                      }
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="samplePatches">Sample Patches (ZIP - Max 5MB)</Label>
+                    <Label htmlFor="samplePatches">
+                      Sample Patches (ZIP - Max 5MB)
+                    </Label>
                     <Input
                       id="samplePatches"
                       type="file"
                       accept=".zip"
-                      onChange={(e) => handleFileChange("samplePatches", e.target.files?.[0] || null)}
+                      onChange={(e) =>
+                        handleFileChange(
+                          "samplePatches",
+                          e.target.files?.[0] || null
+                        )
+                      }
                     />
                   </div>
                 </div>
@@ -626,21 +710,28 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                   <Textarea
                     id="sshPublicKey"
                     value={formData.sshPublicKey}
-                    onChange={(e) => handleInputChange("sshPublicKey", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("sshPublicKey", e.target.value)
+                    }
                     rows={3}
                     className="font-mono text-sm"
                     placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAA..."
                   />
-                  {formData.sshPublicKey && !validateSSHKey(formData.sshPublicKey) && (
-                    <p className="text-sm text-red-500">Invalid SSH key format</p>
-                  )}
+                  {formData.sshPublicKey &&
+                    !validateSSHKey(formData.sshPublicKey) && (
+                      <p className="text-sm text-red-500">
+                        Invalid SSH key format
+                      </p>
+                    )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="prLinks">Pull Request Links</Label>
                   <Textarea
                     id="prLinks"
                     value={formData.prLinks}
-                    onChange={(e) => handleInputChange("prLinks", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("prLinks", e.target.value)
+                    }
                     rows={3}
                     placeholder="List your relevant PR links, one per line..."
                   />
@@ -651,12 +742,16 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
             {/* Step 5: Access & Preferences */}
             {currentStep === 5 && (
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold mb-4">Access & Preferences</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Access & Preferences
+                </h3>
                 <div className="space-y-2">
                   <Label className="mb-2 block">Desired Access Level</Label>
                   <RadioGroup
                     value={formData.accessLevel}
-                    onValueChange={(value) => handleInputChange("accessLevel", value)}
+                    onValueChange={(value) =>
+                      handleInputChange("accessLevel", value)
+                    }
                     className="flex flex-wrap gap-4"
                   >
                     <div className="flex items-center space-x-2">
@@ -664,11 +759,17 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                       <Label htmlFor="access-read-only">Read Only</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Contributor" id="access-contributor" />
+                      <RadioGroupItem
+                        value="Contributor"
+                        id="access-contributor"
+                      />
                       <Label htmlFor="access-contributor">Contributor</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Maintainer" id="access-maintainer" />
+                      <RadioGroupItem
+                        value="Maintainer"
+                        id="access-maintainer"
+                      />
                       <Label htmlFor="access-maintainer">Maintainer</Label>
                     </div>
                   </RadioGroup>
@@ -678,17 +779,25 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                     <Checkbox
                       id="ndaAgreement"
                       checked={formData.ndaAgreement}
-                      onCheckedChange={(checked) => handleInputChange("ndaAgreement", checked)}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("ndaAgreement", checked)
+                      }
                     />
-                    <Label htmlFor="ndaAgreement">I agree to sign an NDA if required</Label>
+                    <Label htmlFor="ndaAgreement">
+                      I agree to sign an NDA if required
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="twoFactorEnabled"
                       checked={formData.twoFactorEnabled}
-                      onCheckedChange={(checked) => handleInputChange("twoFactorEnabled", checked)}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("twoFactorEnabled", checked)
+                      }
                     />
-                    <Label htmlFor="twoFactorEnabled">I have 2FA enabled on my GitHub account</Label>
+                    <Label htmlFor="twoFactorEnabled">
+                      I have 2FA enabled on my GitHub account
+                    </Label>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -697,7 +806,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                     id="earliestStartDate"
                     type="date"
                     value={formData.earliestStartDate}
-                    onChange={(e) => handleInputChange("earliestStartDate", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("earliestStartDate", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -706,7 +817,9 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
             {/* Step 6: Legal & Signature */}
             {currentStep === 6 && (
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold mb-4">Legal & Signature</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Legal & Signature
+                </h3>
                 <div className="space-y-3">
                   <div className="flex items-start space-x-2">
                     <Checkbox
@@ -726,7 +839,10 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                       id="contributionGuidelinesAgreed"
                       checked={formData.contributionGuidelinesAgreed}
                       onCheckedChange={(checked) =>
-                        handleInputChange("contributionGuidelinesAgreed", checked)
+                        handleInputChange(
+                          "contributionGuidelinesAgreed",
+                          checked
+                        )
                       }
                       required
                     />
@@ -739,12 +855,16 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                   <h4 className="mb-3 font-medium">Digital Signature</h4>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="fullName">Full Name (for signature) *</Label>
+                      <Label htmlFor="fullName">
+                        Full Name (for signature) *
+                      </Label>
                       <Input
                         id="fullName"
                         type="text"
                         value={formData.fullName}
-                        onChange={(e) => handleInputChange("fullName", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("fullName", e.target.value)
+                        }
                         required
                       />
                     </div>
@@ -754,14 +874,16 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
                         id="signatureDate"
                         type="date"
                         value={formData.signatureDate}
-                        onChange={(e) => handleInputChange("signatureDate", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("signatureDate", e.target.value)
+                        }
                         required
                       />
                     </div>
                   </div>
                   <p className="mt-2 text-sm text-gray-600">
-                    By typing your full name above, you are providing your digital signature and legal
-                    consent to this application.
+                    By typing your full name above, you are providing your
+                    digital signature and legal consent to this application.
                   </p>
                 </div>
               </div>
@@ -789,8 +911,5 @@ export default function ContributorApplicationForm({repo}:ContributorApplication
         </div>
       </div>
     </div>
-        
-      
-
-  )
+  );
 }
